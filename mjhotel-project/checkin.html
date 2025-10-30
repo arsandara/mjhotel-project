@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check In | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --brand: #0e4c2f;
+        --brand-2: #065238;
+        --brand-2-20: rgba(6, 82, 56, 0.2);
+        --bg: #f1f5f9;
+        --text: #111827;
+        --muted: #475569;
+        --border: #e5e7eb;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --side-w: 260px;
+        --green: #22c55e;
+        --yellow: #f59e0b;
+        --red: #ef4444;
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: var(--side-w) 1fr;
+        min-height: 100svh;
+      }
+
+      /* Sidebar */
+      aside {
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 4px 12px;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        object-fit: contain;
+      }
+      .brand .meta b {
+        font-size: 16px;
+      }
+      .brand .meta small {
+        color: #6b7280;
+        font-size: 12px;
+      }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        color: #0f172a;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.2s;
+      }
+      .menu a svg {
+        width: 22px;
+        height: 22px;
+      }
+      .menu a.active {
+        background: var(--brand-2-20);
+      }
+      .menu a:hover {
+        background: rgba(6, 82, 56, 0.08);
+      }
+      .logout {
+        margin-top: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-align: center;
+        color: #374151;
+        background: #f3f4f6;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .logout:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      /* Main */
+      main {
+        padding: 24px;
+      }
+      .page-title {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .subtitle {
+        color: #64748b;
+        margin-bottom: 16px;
+        font-size: 13.5px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .btn {
+        height: 40px;
+        border: 0;
+        border-radius: 10px;
+        padding: 0 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        opacity: 0.95;
+      }
+      .search {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 10px;
+        padding: 0 12px;
+        height: 40px;
+      }
+      .search input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font-size: 14px;
+        min-width: 220px;
+      }
+
+      /* Card & table */
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .card-b {
+        padding: 12px;
+      }
+      .table-wrap {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+      }
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      th {
+        background: #f9fafb;
+        text-align: left;
+        font-size: 12.5px;
+        color: #334155;
+      }
+      td {
+        font-size: 13px;
+      }
+
+      .idcell {
+        font-weight: 700;
+        color: #111;
+      }
+      .money {
+        white-space: nowrap;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border: 0;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        color: #fff;
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .b-yellow {
+        background: #f59e0b;
+      }
+      .b-green {
+        background: #22c55e;
+      }
+      .b-red {
+        background: #ef4444;
+      }
+
+      /* Pager */
+      .pager {
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end;
+        margin: 10px 6px 6px;
+        flex-wrap: wrap;
+      }
+      .pager button {
+        min-width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .pager .is-active {
+        background: var(--brand-2-20);
+        border-color: rgba(6, 82, 56, 0.35);
+      }
+
+      /* ====== Modal (shared) ====== */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        z-index: 50;
+      }
+      .modal.open {
+        display: flex;
+      }
+      .dialog {
+        width: min(880px, 95vw);
+        background: #fff;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      }
+      .dialog-h {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .dialog-b {
+        padding: 18px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      label {
+        font-size: 13px;
+        color: #334155;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="date"],
+      input[type="tel"],
+      select,
+      textarea {
+        height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 12px;
+        font-family: "Geist", sans-serif;
+        font-size: 14px;
+        background: #fff;
+      }
+      textarea {
+        height: 80px;
+        padding: 10px 12px;
+        resize: vertical;
+      }
+      .dialog-f {
+        padding: 14px 18px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-ghost {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: #111;
+      }
+
+      /* Modal kecil (edit nomor kamar) */
+      .dialog.slim {
+        width: min(520px, 92vw);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside>
+        <div class="brand">
+          <img src="logo.png" alt="Hotel Mukti Jaya" />
+          <div class="meta">
+            <b>Hotel Mukti Jaya</b><br /><small>Admin Panel</small>
+          </div>
+        </div>
+
+        <nav class="menu" id="sideMenu">
+          <a href="dashboard.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="14" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" /></svg
+            >Dashboard
+          </a>
+          <a class="active" href="#">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12h12" />
+              <path d="m15 18 6-6-6-6" />
+              <path d="M3 3v18" /></svg
+            >Check In
+          </a>
+          <a href="checkout.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 12H3" />
+              <path d="m9 18-6-6 6-6" />
+              <path d="M21 3v18" /></svg
+            >Check Out
+          </a>
+          <a href="Landingpage.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" /></svg
+            >Landing Page
+          </a>
+        </nav>
+
+        <div
+          class="logout"
+          onclick="if(confirm('Yakin ingin logout?')) window.location.href='admin-login.html'"
+        >
+          Logout
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main>
+        <h1 class="page-title">Check In</h1>
+        <p class="subtitle">
+          Pada halaman ini, admin dapat melakukan pengelolaan data reservasi,
+          seperti menambah, mengedit, dan menghapus data tamu.
+        </p>
+
+        <div class="toolbar">
+          <button class="btn btn-primary" id="btnOpenAdd">
+            Tambah Reservasi
+          </button>
+          <div class="search">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#64748b"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              type="text"
+              id="q"
+              placeholder="Cari nama / kamar / email..."
+            />
+          </div>
+        </div>
+
+        <section class="card">
+          <div class="card-b">
+            <div class="table-wrap">
+              <table id="tbl">
+                <thead>
+                  <tr>
+                    <th style="width: 8%">ID</th>
+                    <th style="width: 18%">Nama Lengkap</th>
+                    <th style="width: 16%">Kamar</th>
+                    <th style="width: 12%">Check In</th>
+                    <th style="width: 12%">Check Out</th>
+                    <th style="width: 8%">Malam</th>
+                    <th style="width: 14%">Total</th>
+                    <th style="width: 12%; text-align: right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pager" id="pager"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ===== Modal: Tambah Reservasi ===== -->
+    <div class="modal" id="addModal" aria-hidden="true">
+      <div class="dialog">
+        <div class="dialog-h">Tambah Reservasi</div>
+        <form id="addForm">
+          <div class="dialog-b">
+            <div class="row">
+              <div class="field">
+                <label>Kamar</label>
+                <select name="room" required>
+                  <option>Suite Twin Bed</option>
+                  <option>Suite Double Bed</option>
+                  <option>Deluxe Twin Bed</option>
+                  <option>Deluxe Double Bed</option>
+                  <option>Superior Twin Bed</option>
+                  <option>Superior Double Tanpa Bathub</option>
+                  <option>Superior Double Bathub</option>
+                  <option>Standard Twin Bed</option>
+                  <option>Standard Double Bed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Check In</label>
+                <input type="date" name="checkin" required />
+              </div>
+              <div class="field">
+                <label>Check Out</label>
+                <input type="date" name="checkout" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Nama Lengkap*</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Nama tamu"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Email*</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="email@contoh.com"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label>No. HP*</label>
+                <input type="tel" name="phone" placeholder="08xxxx" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Nomor Kamar (opsional)</label>
+                <input type="text" name="roomno" placeholder="cth: 221" />
+              </div>
+              <div class="field">
+                <label>Catatan (opsional)</label>
+                <input type="text" name="note" placeholder="do not disturb" />
+              </div>
+            </div>
+          </div>
+          <div class="dialog-f">
+            <button type="button" class="btn btn-ghost" data-close>
+              Batal
+            </button>
+            <button class="btn btn-primary">Tambah Reservasi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== Modal: Edit Nomor Kamar ===== -->
+    <div class="modal" id="editModal" aria-hidden="true">
+      <div class="dialog slim">
+        <div class="dialog-h">Edit Nomor Kamar Tamu</div>
+        <form id="editForm">
+          <div class="dialog-b">
+            <div class="field">
+              <label>Nomor Kamar</label>
+              <input
+                type="text"
+                name="roomno"
+                placeholder="Masukkan nomor kamar"
+                required
+              />
+            </div>
+          </div>
+          <div class="dialog-f">
+            <button type="button" class="btn btn-ghost" data-close>
+              Batal
+            </button>
+            <button class="btn btn-primary">Edit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      /* ====== Data & Utils ====== */
+      const PRICE = {
+        "Suite Double Bed": 345000,
+        "Suite Twin Bed": 345000,
+        "Deluxe Double Bed": 295000,
+        "Deluxe Twin Bed": 285000,
+        "Superior Double Bathub": 245000,
+        "Superior Double Tanpa Bathub": 245000,
+        "Superior Twin Bed": 245000,
+        "Standard Double Bed": 195000,
+        "Standard Twin Bed": 195000,
+      };
+
+      const LS_KEY = "hmj_checkin";
+      const money = (n) => "Rp. " + (n || 0).toLocaleString("id-ID");
+      const fmtDate = (d) =>
+        new Date(d).toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      const nightsBetween = (a, b) =>
+        Math.max(
+          1,
+          Math.round((new Date(b) - new Date(a)) / (1000 * 60 * 60 * 24))
+        );
+
+      const db = {
+        list() {
+          return JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+        },
+        save(rows) {
+          localStorage.setItem(LS_KEY, JSON.stringify(rows));
+        },
+      };
+
+      // Seed contoh jika kosong
+      if (db.list().length === 0) {
+        db.save([
+          {
+            id: "0001",
+            name: "Morgan Vero",
+            room: "Suite Twin Bed",
+            checkin: "2026-01-15",
+            checkout: "2026-01-17",
+            email: "hidupjokowi@gmail.com",
+            phone: "0812345678",
+            note: "",
+            roomno: "12",
+          },
+        ]);
+      }
+
+      /* ====== Render Tabel + Pager ====== */
+      const PER = 5;
+      let page = 1,
+        query = "";
+      const $tbody = document.querySelector("#tbl tbody");
+      const $pager = document.getElementById("pager");
+      const $q = document.getElementById("q");
+
+      function filtered() {
+        const rows = db.list();
+        if (!query) return rows;
+        const ql = query.toLowerCase();
+        return rows.filter(
+          (r) =>
+            (r.name || "").toLowerCase().includes(ql) ||
+            (r.room || "").toLowerCase().includes(ql) ||
+            (r.email || "").toLowerCase().includes(ql) ||
+            (r.roomno || "").toLowerCase().includes(ql)
+        );
+      }
+
+      function draw() {
+        const rows = filtered();
+        const totalPage = Math.max(1, Math.ceil(rows.length / PER));
+        page = Math.max(1, Math.min(page, totalPage));
+        const slice = rows.slice((page - 1) * PER, page * PER);
+
+        $tbody.innerHTML = slice
+          .map((r) => {
+            const nights = nightsBetween(r.checkin, r.checkout);
+            const total = nights * (PRICE[r.room] || 0);
+            return `
+          <tr data-id="${r.id}">
+            <td class="idcell">#${r.id}</td>
+            <td>${r.name}</td>
+            <td>${r.room}${
+              r.roomno
+                ? `<div style="color:#64748b;font-size:12px;margin-top:4px">No: ${r.roomno}</div>`
+                : ""
+            }</td>
+            <td>${fmtDate(r.checkin)}</td>
+            <td>${fmtDate(r.checkout)}</td>
+            <td>${nights}</td>
+            <td class="money">${money(total)}</td>
+            <td>
+              <div class="actions">
+                <!-- Edit -->
+                <button class="icon-btn b-yellow" data-edit title="Edit nomor kamar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>
+                <!-- Checkout (Hijau) -->
+                <button class="icon-btn b-green" data-checkout title="Checkout">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12h12"/><path d="m15 18 6-6-6-6"/><path d="M3 3v18"/>
+                  </svg>
+                </button>
+                <!-- Delete -->
+                <button class="icon-btn b-red" data-delete title="Hapus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                    <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+          })
+          .join("");
+
+        // pager
+        let html = "";
+        const b = (t, p, dis = false, act = false) =>
+          `<button ${dis ? "disabled" : ""} class="${
+            act ? "is-active" : ""
+          }" onclick="goto(${p})">${t}</button>`;
+        html += b("‹", page - 1, page <= 1);
+        for (let i = 1; i <= totalPage; i++) html += b(i, i, false, i === page);
+        html += b("›", page + 1, page >= totalPage);
+        $pager.innerHTML = html;
+      }
+      window.goto = (p) => {
+        page = p;
+        draw();
+      };
+
+      // aksi table
+      document.getElementById("tbl").addEventListener("click", (e) => {
+        const tr = e.target.closest("tr[data-id]");
+        if (!tr) return;
+        const id = tr.dataset.id;
+
+        if (e.target.closest("[data-edit]")) openEdit(id);
+
+        if (e.target.closest("[data-checkout]")) {
+          // siapkan payload checkout
+          const rows = db.list();
+          const r = rows.find((x) => x.id === id);
+          const nights = nightsBetween(r.checkin, r.checkout);
+          const total = nights * (PRICE[r.room] || 0);
+
+          const params = new URLSearchParams({
+            id: r.id,
+            name: r.name,
+            room: r.room,
+            roomno: r.roomno || "",
+            checkin: r.checkin,
+            checkout: r.checkout,
+            nights: String(nights),
+            total: String(total),
+          });
+
+          // simpan juga di sessionStorage (lebih rapi dipakai di checkout.html)
+          sessionStorage.setItem(
+            "checkoutPayload",
+            JSON.stringify({
+              id: r.id,
+              name: r.name,
+              room: r.room,
+              roomno: r.roomno || "",
+              checkin: r.checkin,
+              checkout: r.checkout,
+              nights,
+              total,
+            })
+          );
+
+          // arahkan ke halaman checkout
+          window.location.href = "checkout.html?" + params.toString();
+          return;
+        }
+
+        if (e.target.closest("[data-delete]")) {
+          if (confirm("Hapus reservasi #" + id + "?")) {
+            db.save(db.list().filter((x) => x.id !== id));
+            draw();
+          }
+        }
+      });
+
+      $q.addEventListener("input", (e) => {
+        query = e.target.value.trim();
+        page = 1;
+        draw();
+      });
+
+      /* ====== Modal helpers ====== */
+      const addModal = document.getElementById("addModal");
+      const editModal = document.getElementById("editModal");
+      const open = (m) => {
+        m.classList.add("open");
+        document.documentElement.style.overflow = "hidden";
+      };
+      const close = (m) => {
+        m.classList.remove("open");
+        document.documentElement.style.overflow = "";
+      };
+
+      addModal.addEventListener("click", (e) => {
+        if (e.target === addModal) close(addModal);
+      });
+      editModal.addEventListener("click", (e) => {
+        if (e.target === editModal) close(editModal);
+      });
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) =>
+          b.addEventListener("click", () => close(b.closest(".modal")))
+        );
+
+      /* ====== Add Reservasi ====== */
+      document.getElementById("btnOpenAdd").addEventListener("click", () => {
+        // default tanggal
+        const f = document.getElementById("addForm");
+        const today = new Date();
+        const toISO = (d) => d.toISOString().slice(0, 10);
+        const addDays = (d, n) => {
+          const x = new Date(d);
+          x.setDate(x.getDate() + n);
+          return x;
+        };
+        f.checkin.value = toISO(today);
+        f.checkout.value = toISO(addDays(today, 2));
+        open(addModal);
+      });
+
+      document.getElementById("addForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const f = e.target;
+        if (new Date(f.checkout.value) <= new Date(f.checkin.value)) {
+          alert("Tanggal check-out harus setelah check-in");
+          return;
+        }
+        const rows = db.list();
+        const nextId = String(
+          (rows[0]?.id ? Number(rows[0].id) : 0) + 1
+        ).padStart(4, "0"); // increment sederhana
+        const row = {
+          id: nextId,
+          name: f.name.value.trim(),
+          room: f.room.value,
+          checkin: f.checkin.value,
+          checkout: f.checkout.value,
+          email: f.email.value.trim(),
+          phone: f.phone.value.trim(),
+          note: f.note.value.trim(),
+          roomno: f.roomno.value.trim(),
+        };
+        rows.unshift(row); // prepend
+        db.save(rows);
+        close(addModal);
+        e.target.reset();
+        page = 1;
+        draw();
+      });
+
+      /* ====== Edit nomor kamar ====== */
+      let editingId = null;
+      function openEdit(id) {
+        editingId = id;
+        const row = db.list().find((x) => x.id === id);
+        const f = document.getElementById("editForm");
+        f.roomno.value = row?.roomno || "";
+        open(editModal);
+        f.roomno.focus();
+      }
+      document.getElementById("editForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const v = e.target.roomno.value.trim();
+        const rows = db
+          .list()
+          .map((r) => (r.id === editingId ? { ...r, roomno: v } : r));
+        db.save(rows);
+        close(editModal);
+        draw();
+      });
+
+      // init render
+      draw();
+    </script>
+  </body>
+</html>

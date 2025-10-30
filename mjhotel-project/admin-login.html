@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ===== Vars & Reset (selaras dengan halamanmu) ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --brand: #0e4c2f;
+        --brand-dark: #0e4c2f;
+        --bg: #f1f5f9;
+        --bg-soft: #d9e8ef;
+        --text: #111827;
+        --muted: #475569;
+        --border: #e5e7eb;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        --radius: 6px;
+        --ctrl-h: 44px;
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: linear-gradient(
+            0deg,
+            rgba(14, 76, 47, 0.06),
+            rgba(14, 76, 47, 0.06)
+          ),
+          var(--bg);
+        color: var(--text);
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      /* ===== Card Login (meniru komponen & nuansa gambar) ===== */
+      .login-wrap {
+        width: 100%;
+        max-width: 520px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 22px;
+        text-align: center;
+      }
+      .brand img {
+        width: 74px;
+        height: auto;
+      }
+      .brand h1 {
+        font-size: 18px;
+        letter-spacing: 0.04em;
+        font-weight: 700;
+      }
+      .brand small {
+        color: #6b7280;
+        font-size: 12px;
+      }
+
+      .form {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 14px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .label {
+        font-size: 13px;
+        color: #334155;
+      }
+      .control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: var(--ctrl-h);
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: #fff;
+      }
+      .control:focus-within {
+        outline: 2px solid rgba(14, 76, 47, 0.22);
+      }
+      .control input {
+        border: 0;
+        outline: 0;
+        width: 100%;
+        background: transparent;
+        color: #111827;
+        font-size: 14px;
+      }
+      .toggle {
+        border: 0;
+        background: #f8fafc;
+        height: 28px;
+        padding: 0 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 4px;
+      }
+      .row label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .row a {
+        font-size: 13px;
+        color: var(--brand);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .row a:hover {
+        text-decoration: underline;
+      }
+
+      .btn-primary {
+        height: var(--ctrl-h);
+        background: var(--brand);
+        color: #fff;
+        border: 0;
+        border-radius: var(--radius);
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background: var(--brand-dark);
+      }
+
+      .error {
+        display: none;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #ef4444;
+      }
+      .note {
+        margin-top: 16px;
+        text-align: center;
+        font-size: 12px;
+        color: #64748b;
+      }
+
+      /* ===== Footer strip opsional agar serasi ===== */
+      .footer {
+        margin-top: 18px;
+        text-align: center;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+
+      @media (max-width: 560px) {
+        .login-wrap {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="login-wrap" role="main" aria-labelledby="title">
+      <div class="brand">
+        <!-- Ganti src ke logo kamu -->
+        <img src="logo.png" alt="Hotel Mukti Jaya" />
+        <h1 id="title">Hotel Mukti Jaya</h1>
+        <small>The Cozy Budget Hotel</small>
+      </div>
+
+      <form id="adminLogin" class="form" novalidate>
+        <div class="field">
+          <label class="label" for="username">Username</label>
+          <div class="control">
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder="Masukkan username"
+              autocomplete="username"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="password">Password</label>
+          <div class="control">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Masukkan password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle"
+              id="togglePwd"
+              aria-controls="password"
+              aria-pressed="false"
+            >
+              Tampil
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <label><input type="checkbox" id="remember" /> Ingat saya</label>
+          <a
+            href="#"
+            onclick="alert('Hubungi administrator untuk reset password.');return false;"
+            >Lupa password?</a
+          >
+        </div>
+
+        <button class="btn-primary" type="submit">Login</button>
+        <p class="error" id="errorMsg">Username atau password tidak valid.</p>
+        <p class="note">Hanya untuk staf yang berwenang.</p>
+      </form>
+
+      <div class="footer">© 2025 Hotel Mukti Jaya</div>
+    </main>
+
+    <script>
+      // Toggle tampil/sembunyi password
+      const toggle = document.getElementById("togglePwd");
+      const pwd = document.getElementById("password");
+      toggle.addEventListener("click", () => {
+        const show = pwd.type === "password";
+        pwd.type = show ? "text" : "password";
+        toggle.textContent = show ? "Sembunyi" : "Tampil";
+        toggle.setAttribute("aria-pressed", String(show));
+        pwd.focus();
+      });
+
+      // Demo handler (ganti dengan request ke server-mu)
+      const form = document.getElementById("adminLogin");
+      const errorMsg = document.getElementById("errorMsg");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const username = (
+          document.getElementById("username").value || ""
+        ).trim();
+        const password = (
+          document.getElementById("password").value || ""
+        ).trim();
+
+        // Validasi dasar (client-side)
+        if (!username || !password) {
+          errorMsg.textContent = "Mohon isi username dan password.";
+          errorMsg.style.display = "block";
+          return;
+        }
+
+        // TODO: gantikan bagian ini dengan fetch() ke endpoint login backend
+        // Contoh redirect sukses (sementara):
+        if (username === "admin" && password === "admin") {
+          errorMsg.style.display = "none";
+          window.location.href = "dashboard.html"; // ubah ke dashboard-mu
+        } else {
+          errorMsg.textContent = "Username atau password tidak valid.";
+          errorMsg.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

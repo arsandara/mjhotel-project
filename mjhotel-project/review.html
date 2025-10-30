@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Booking | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --brand: #0e4c2f;
+        --brand-dark: #08341f;
+        --bg: #f1f5f9;
+        --text: #111827;
+        --radius: 6px;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        --nav-h: 78px;
+        padding-top: var(--nav-h);
+      }
+
+      /* ===== Navbar (dengan hamburger) ===== */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: var(--brand);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 60px;
+      }
+      .logo {
+        height: 50px;
+      }
+      .nav-menu {
+        display: flex;
+        align-items: center;
+      }
+      .nav-menu a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 30px;
+        padding: 8px 16px;
+        border-radius: 6px;
+      }
+      .nav-menu a:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .nav-menu .active {
+        background: #fff;
+        color: var(--brand);
+        font-weight: 600;
+      }
+
+      /* tombol hamburger */
+      .nav-toggle {
+        display: none;
+        background: transparent;
+        border: 0;
+        color: #fff;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+      }
+      .nav-toggle:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+      }
+
+      /* ===== Judul ===== */
+      .title-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: transparent;
+        color: var(--text);
+        font-weight: 800;
+        font-size: 32px;
+        line-height: 1.2;
+        padding: 28px 16px 6px;
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 8px auto 24px;
+        padding: 0 12px;
+      }
+
+      /* ===== Summary ===== */
+      .summary {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .sum-box {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 12px;
+      }
+      .sum-top {
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 6px;
+      }
+      .sum-val {
+        font-weight: 700;
+      }
+      .sum-sub {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+      }
+
+      /* ===== Room card ===== */
+      .room-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        box-shadow: var(--shadow);
+        padding: 14px;
+        display: flex;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .room-card img {
+        width: 230px;
+        height: 155px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      .room-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .room-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .room-meta {
+        font-size: 12px;
+        color: #475569;
+        display: flex;
+        gap: 14px;
+        margin-bottom: 8px;
+      }
+      .room-price {
+        font-size: 24px;
+        font-weight: 800;
+        margin-top: auto;
+      }
+
+      /* ===== Sections ===== */
+      .section-title {
+        font-weight: 800;
+        margin: 16px 0 8px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+      .field {
+        margin-bottom: 14px;
+      }
+      .label {
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      .req {
+        color: #dc2626;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"] {
+        width: 100%;
+        height: 44px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 0 12px;
+        font-size: 14px;
+        outline: none;
+      }
+      input:focus {
+        border-color: #94a3b8;
+      }
+      .dob {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        gap: 8px;
+      }
+      .error {
+        color: #dc2626;
+        font-size: 12px;
+        margin-top: 6px;
+        min-height: 14px;
+      }
+
+      /* ===== Payment (hijau) ===== */
+      .pay-card {
+        background: var(--brand);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .pay-header {
+        background: transparent;
+        padding: 16px 18px;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .pay-body {
+        padding: 0 18px 12px;
+        background: transparent;
+      }
+      .pay-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 6px 0;
+      }
+      .pay-row.total {
+        margin-top: 6px;
+      }
+      .pay-row.total span:first-child {
+        font-size: 22px;
+        font-weight: 800;
+      }
+      .pay-row.total span:last-child {
+        font-size: 28px;
+        font-weight: 800;
+      }
+      .cta {
+        padding: 16px 18px 18px;
+        background: transparent;
+        border-top: none;
+      }
+      .btn-light {
+        width: 100%;
+        height: 48px;
+        background: #fff;
+        color: #0f172a;
+        border: 0;
+        border-radius: var(--radius);
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .btn-light:hover {
+        filter: brightness(0.95);
+      }
+
+      /* ===== Responsive ===== */
+      @media (min-width: 720px) {
+        .summary {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+      }
+
+      /* navbar mobile dengan hamburger */
+      @media (max-width: 860px) {
+        :root {
+          --nav-h: 64px;
+        }
+        body {
+          padding-top: var(--nav-h);
+        }
+        .navbar {
+          padding: 12px 20px;
+        }
+        .nav-toggle {
+          display: inline-flex;
+        }
+        .nav-menu {
+          position: fixed;
+          top: var(--nav-h);
+          left: 0;
+          right: 0;
+          background: var(--brand);
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+          border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .nav-menu a {
+          margin: 0;
+          padding: 14px 18px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0;
+        }
+        .nav-menu.open {
+          max-height: 70vh;
+        }
+        html.nav-open,
+        html.nav-open body {
+          overflow: hidden;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="logo-area">
+        <img src="logo.png" alt="Logo Hotel" class="logo" />
+      </div>
+
+      <!-- HAMBURGER -->
+      <button
+        class="nav-toggle"
+        id="navToggle"
+        aria-controls="primary-nav"
+        aria-expanded="false"
+        aria-label="Buka menu"
+      >
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 6h18M3 12h18M3 18h18"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <nav class="nav-menu" id="primary-nav">
+        <a href="Landingpage.html">Home</a>
+        <a href="reservasi.html" class="active">Reservasi</a>
+        <a href="tentang.html">Tentang</a>
+      </nav>
+    </header>
+
+    <!-- Judul -->
+    <div class="title-bar">Review Booking</div>
+
+    <main class="wrap">
+      <!-- Summary -->
+      <section class="summary">
+        <div class="sum-box">
+          <div class="sum-top">Check In</div>
+          <div class="sum-val" id="sumIn">-</div>
+          <div class="sum-sub">14.00 WIB</div>
+        </div>
+        <div class="sum-box">
+          <div class="sum-top">Check Out</div>
+          <div class="sum-val" id="sumOut">-</div>
+          <div class="sum-sub">12.00 WIB</div>
+        </div>
+        <div class="sum-box">
+          <div class="sum-top">Person</div>
+          <div class="sum-val" id="sumPerson">-</div>
+        </div>
+      </section>
+
+      <!-- Room chosen -->
+      <section class="room-card">
+        <img id="roomImg" alt="Room" />
+        <div class="room-info">
+          <div class="room-title" id="roomName">-</div>
+          <div class="room-meta">
+            <span id="roomMetaPerson">👥 2 Orang</span>
+          </div>
+          <div class="room-price" id="roomPrice">Rp 0</div>
+        </div>
+      </section>
+
+      <!-- Personal Info -->
+      <h3 class="section-title">Informasi Pribadi</h3>
+      <section class="card">
+        <div class="field">
+          <label class="label">Nama Lengkap <span class="req">*</span></label>
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Nama sesuai identitas"
+          />
+          <div class="error" id="errName"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">Tanggal Lahir <span class="req">*</span></label>
+          <div class="dob">
+            <input
+              type="text"
+              id="dobD"
+              placeholder="dd"
+              maxlength="2"
+              inputmode="numeric"
+            />
+            <input
+              type="text"
+              id="dobM"
+              placeholder="mm"
+              maxlength="2"
+              inputmode="numeric"
+            />
+            <input
+              type="text"
+              id="dobY"
+              placeholder="yyyy"
+              maxlength="4"
+              inputmode="numeric"
+            />
+          </div>
+          <div class="error" id="errDob"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">Email <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="nama@domain.com" />
+          <div class="error" id="errEmail"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">No. HP <span class="req">*</span></label>
+          <input
+            type="tel"
+            id="phone"
+            placeholder="08xxxx / 62xxxx"
+            inputmode="numeric"
+            maxlength="15"
+          />
+          <div class="error" id="errPhone"></div>
+        </div>
+
+        <div class="field">
+          <label class="label"
+            >Catatan
+            <span style="color: #64748b; font-size: 12px"
+              >(opsional)</span
+            ></label
+          >
+          <input
+            type="text"
+            id="note"
+            placeholder="Permintaan khusus (sesuai ketersediaan)"
+          />
+        </div>
+      </section>
+
+      <!-- Payment -->
+      <h3 class="section-title">Detail Pembayaran</h3>
+      <section class="pay-card">
+        <div class="pay-header">
+          <span id="payTitle">-</span>
+          <span id="paySubTotal">Rp 0</span>
+        </div>
+        <div class="pay-body">
+          <div class="pay-row total">
+            <span>Total</span>
+            <span id="payTotal">Rp 0</span>
+          </div>
+        </div>
+        <div class="cta">
+          <button class="btn-light" id="btnSubmit">Pesan Sekarang</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ====== HAMBURGER ======
+      (function () {
+        const toggle = document.getElementById("navToggle");
+        const menu = document.getElementById("primary-nav");
+        if (!toggle || !menu) return;
+        toggle.addEventListener("click", () => {
+          const open = menu.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", String(open));
+          document.documentElement.classList.toggle("nav-open", open);
+        });
+      })();
+
+      // ====== UTIL ======
+      const fmtIDR = (n) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          maximumFractionDigits: 0,
+        })
+          .format(n)
+          .replace(/\u00A0/g, " ");
+      const parseISO = (s) => (s ? new Date(s + "T00:00:00") : null);
+      const diffDays = (a, b) => Math.max(0, Math.round((b - a) / 86400000));
+      const pad2 = (n) => String(n).padStart(2, "0");
+      const $ = (id) => document.getElementById(id);
+
+      // ====== PAGE LOGIC ======
+      document.addEventListener("DOMContentLoaded", () => {
+        const qs = new URLSearchParams(location.search);
+        let payload = {
+          room: qs.get("room"),
+          price: Number(qs.get("price")),
+          img: qs.get("img"),
+          checkin: qs.get("checkin"),
+          checkout: qs.get("checkout"),
+          persons: Number(qs.get("persons")),
+        };
+        const stash = sessionStorage.getItem("bookingPayload");
+        if (stash) payload = { ...JSON.parse(stash), ...payload };
+
+        payload.room ||= "Kamar";
+        payload.price = Number(payload.price) || 0;
+        payload.img ||= "ataslanding.png";
+        payload.persons = Number(payload.persons) || 2;
+
+        $("sumIn").textContent = payload.checkin || "-";
+        $("sumOut").textContent = payload.checkout || "-";
+        $("sumPerson").textContent =
+          (payload.persons < 10 ? "0" + payload.persons : payload.persons) +
+          " Person";
+
+        $("roomImg").src = payload.img;
+        $("roomImg").alt = payload.room;
+        $("roomName").textContent = payload.room;
+        $("roomMetaPerson").textContent = `👥 ${payload.persons} Orang`;
+        $("roomPrice").textContent = fmtIDR(payload.price);
+
+        const inDate = parseISO(payload.checkin);
+        const outDate = parseISO(payload.checkout);
+        let nights = 0;
+        if (inDate && outDate) {
+          nights = diffDays(inDate, outDate);
+          if (nights === 0) nights = 1;
+        }
+        const total = payload.price * (nights || 1);
+        $("payTitle").textContent = `${payload.room}${
+          nights ? ` (${nights} night${nights > 1 ? "s" : ""})` : ""
+        }`;
+        $("paySubTotal").textContent = fmtIDR(total);
+        $("payTotal").textContent = fmtIDR(total);
+
+        ["dobD", "dobM", "dobY", "phone"].forEach((id) => {
+          $(id).addEventListener("input", (e) => {
+            e.target.value = e.target.value.replace(/\D+/g, "");
+          });
+        });
+        $("dobD").addEventListener("input", (e) => {
+          if (e.target.value.length === 2) $("dobM").focus();
+        });
+        $("dobM").addEventListener("input", (e) => {
+          if (e.target.value.length === 2) $("dobY").focus();
+        });
+
+        function validate() {
+          let ok = true;
+
+          const name = $("fullName").value.trim();
+          $("errName").textContent =
+            name.length < 3
+              ? ((ok = false), "Nama lengkap minimal 3 karakter.")
+              : "";
+
+          const dd = $("dobD").value,
+            mm = $("dobM").value,
+            yy = $("dobY").value;
+          const d = +dd,
+            m = +mm,
+            y = +yy,
+            yNow = new Date().getFullYear();
+          let dobErr = "";
+          if (dd.length !== 2 || mm.length !== 2 || yy.length !== 4)
+            dobErr = "Tanggal lahir harus dd / mm / yyyy.";
+          else if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > yNow)
+            dobErr = "Tanggal lahir tidak valid.";
+          else {
+            const dt = new Date(`${yy}-${pad2(mm)}-${pad2(dd)}T00:00:00`);
+            if (
+              isNaN(dt) ||
+              dt.getDate() != d ||
+              dt.getMonth() + 1 != m ||
+              dt.getFullYear() != y
+            )
+              dobErr = "Tanggal lahir tidak valid.";
+          }
+          $("errDob").textContent = dobErr;
+          if (dobErr) ok = false;
+
+          const email = $("email").value.trim();
+          const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          $("errEmail").textContent = emailOk
+            ? ""
+            : "Format email tidak valid.";
+          if (!emailOk) ok = false;
+
+          const phone = $("phone").value.trim().replace(/^\+/, "");
+          const phoneOk = /^[0-9]{10,15}$/.test(phone);
+          $("errPhone").textContent = phoneOk
+            ? ""
+            : "No. HP harus angka 10–15 digit.";
+          if (!phoneOk) ok = false;
+
+          return ok;
+        }
+
+        $("btnSubmit").addEventListener("click", () => {
+          if (!validate()) {
+            const firstErr = document.querySelector(".error:not(:empty)");
+            if (firstErr)
+              firstErr.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+          alert("Booking berhasil! Kami telah menerima pesanan Anda.");
+        });
+      });
+    </script>
+  </body>
+</html>

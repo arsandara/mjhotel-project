@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --brand: #0e4c2f;
+        --brand-2: #065238;
+        --brand-2-20: rgba(6, 82, 56, 0.2);
+        --bg: #f1f5f9;
+        --text: #111827;
+        --muted: #475569;
+        --border: #e5e7eb;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --side-w: 260px;
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: var(--side-w) 1fr;
+        min-height: 100svh;
+      }
+
+      /* Sidebar */
+      aside {
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 4px 12px;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        object-fit: contain;
+      }
+      .brand .meta b {
+        font-size: 16px;
+      }
+      .brand .meta small {
+        color: #6b7280;
+        font-size: 12px;
+      }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        color: #0f172a;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.2s;
+      }
+      .menu a svg {
+        width: 22px;
+        height: 22px;
+      }
+      .menu a.active {
+        background: var(--brand-2-20);
+      }
+      .menu a:hover {
+        background: rgba(6, 82, 56, 0.08);
+      }
+      .logout {
+        margin-top: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-align: center;
+        color: #374151;
+        background: #f3f4f6;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .logout:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      /* Main */
+      main {
+        padding: 24px;
+      }
+      h1 {
+        font-size: 26px;
+        font-weight: 800;
+      }
+      .subtitle {
+        color: #64748b;
+        margin: 8px 0 18px;
+        font-size: 13.5px;
+      }
+      h2 {
+        font-size: 16px;
+        margin: 10px 0 14px;
+      }
+
+      /* Cards */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+      }
+      .imgbox {
+        position: relative;
+        background: #f3f4f6;
+      }
+      .imgbox img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+      }
+      .imgbox .del-img {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        opacity: 0;
+        background: rgba(239, 68, 68, 0.92);
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: 0.2s;
+      }
+      .imgbox:hover .del-img {
+        opacity: 1;
+      }
+      .card-b {
+        padding: 12px 14px;
+      }
+      .card-b h3 {
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .card-b p {
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #334155;
+      }
+      .price {
+        font-weight: 600;
+        font-size: 14px;
+        margin-top: 6px;
+      }
+
+      .btns {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .btn {
+        flex: 1;
+        height: 30px;
+        border: 0;
+        border-radius: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 13px;
+        padding: 0 10px;
+        transition: 0.2s;
+      }
+      .btn-edit {
+        background: #f3f4f6;
+        color: #111;
+      }
+      .btn-edit:hover {
+        background: #e5e7eb;
+      }
+      .btn-del {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .btn-del:hover {
+        background: #fecaca;
+      }
+
+      .add-card {
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 30px;
+        background: #fff;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+        text-align: center;
+        text-decoration: none;
+      }
+      .add-card:hover {
+        background: #f9fafb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside>
+        <div class="brand">
+          <img src="logo.png" alt="Hotel Mukti Jaya" />
+          <div class="meta">
+            <b>Hotel Mukti Jaya</b><br /><small>Admin Panel</small>
+          </div>
+        </div>
+
+        <nav class="menu">
+          <a href="dashbord.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="14" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" /></svg
+            >Dashboard
+          </a>
+          <a href="checkin.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12h12" />
+              <path d="m15 18 6-6-6-6" />
+              <path d="M3 3v18" /></svg
+            >Check In
+          </a>
+          <a href="checkout.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 12H3" />
+              <path d="m9 18-6-6 6-6" />
+              <path d="M21 3v18" /></svg
+            >Check Out
+          </a>
+          <a class="active" href="landing.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" /></svg
+            >Landing Page
+          </a>
+        </nav>
+
+        <div
+          class="logout"
+          onclick="if(confirm('Yakin ingin logout?')) window.location.href='admin-login.html'"
+        >
+          Logout
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main>
+        <h1>Landing Page</h1>
+        <p class="subtitle">
+          Pada halaman ini, admin dapat melakukan tambah, edit, dan hapus data
+          kamar yang akan ditampilkan pada halaman utama website Hotel Mukti
+          Jaya.
+        </p>
+        <h2>Manajemen Kamar</h2>
+
+        <div class="grid" id="grid"></div>
+      </main>
+    </div>
+
+    <script>
+      /* ===== 1) Data 18 kamar ===== */
+      const rooms = [
+        { id: 1, name: "Suite Double Bed (Lantai 1)", price: 345000, cap: 2 },
+        { id: 2, name: "Suite Twin Bed (Lantai 1)", price: 345000, cap: 2 },
+        { id: 3, name: "Deluxe Double Bed", price: 295000, cap: 2 },
+        { id: 4, name: "Deluxe Twin Bed", price: 285000, cap: 2 },
+        { id: 5, name: "Superior Double Bathub", price: 245000, cap: 2 },
+        { id: 6, name: "Superior Double Tanpa Bathub", price: 245000, cap: 2 },
+        { id: 7, name: "Superior Twin Bed", price: 245000, cap: 2 },
+        { id: 8, name: "Standard Double Bed", price: 195000, cap: 2 },
+        { id: 9, name: "Standard Twin Bed", price: 195000, cap: 2 },
+        { id: 10, name: "Suite Double Bed (Lantai 2)", price: 345000, cap: 2 },
+        { id: 11, name: "Suite Twin Bed (Lantai 2)", price: 345000, cap: 2 },
+        { id: 12, name: "Deluxe Double Bed (Lantai 2)", price: 295000, cap: 2 },
+        { id: 13, name: "Deluxe Twin Bed (Lantai 2)", price: 285000, cap: 2 },
+        { id: 14, name: "Superior Double Bathub (L2)", price: 245000, cap: 2 },
+        { id: 15, name: "Superior Twin Bed (Lantai 2)", price: 245000, cap: 2 },
+        { id: 16, name: "Standard Double Bed (L2)", price: 195000, cap: 2 },
+        { id: 17, name: "Standard Twin Bed (L2)", price: 195000, cap: 2 },
+        { id: 18, name: "Standard Economy Room", price: 155000, cap: 2 },
+      ];
+
+      /* ===== 2) Mapping nama kamar -> kandidat nama file (tanpa ekstensi) ===== */
+      const IMG_MAP = {
+        "Suite Double Bed (Lantai 1)": [
+          "suite-dbl-lt1",
+          "suite 1 lt 1",
+          "SDBB-LT1",
+        ],
+        "Suite Twin Bed (Lantai 1)": ["suite 1 lt 1", "ST 1 (4)", "ST 1 (5)"],
+        "Deluxe Double Bed": [
+          "deluxe-dbl-lt3",
+          "deluxe-dbl-lt4",
+          "DTB-LT3",
+          "DTB-LT4",
+        ],
+        "Deluxe Twin Bed": [
+          "deluxe-twin-lt2",
+          "deluxe-twin-lt3",
+          "deluxe-twin-lt4",
+          "DTB 2 (1)",
+          "DTB 2 (2)",
+          "DTB 2 (3)",
+        ],
+        "Superior Double Bathub": [
+          "supporier-dbl-lt1",
+          "supperir-dbl-lt2",
+          "SDBB (1)",
+        ],
+        "Superior Double Tanpa Bathub": ["supporiet tanpa bathub", "SDTB (1)"],
+        "Superior Twin Bed": [
+          "superior twin lt2",
+          "STB 2 (1)",
+          "STB 2 (2)",
+          "STB 2 (3)",
+        ],
+        "Standard Double Bed": ["STD 1 (2)", "STD-2"],
+        "Standard Twin Bed": ["STDT 1", "STDT 2", "stnd-twin-lt1"],
+        "Suite Double Bed (Lantai 2)": [
+          "suite-dbl-lt3",
+          "suite 2 lt 1",
+          "ST-LT2",
+        ],
+        "Suite Twin Bed (Lantai 2)": [
+          "suite-twin-lt3",
+          "suiite-twin-lt2",
+          "ST-LT3",
+        ],
+        "Deluxe Double Bed (Lantai 2)": [
+          "DTB-LT2",
+          "DTB 4 (1)",
+          "DTB 4 (2)",
+          "DTB 4 (3)",
+        ],
+        "Deluxe Twin Bed (Lantai 2)": ["DTB 2 (1)", "DTB 2 (2)", "DTB 2 (3)"],
+        "Superior Double Bathub (L2)": [
+          "supperir-dbl-lt2",
+          "supporier-dbl-lt1",
+        ],
+        "Superior Twin Bed (Lantai 2)": ["superior twin lt2", "STB-LT2"],
+        "Standard Double Bed (L2)": ["STD-2", "suite 2 lt 3"],
+        "Standard Twin Bed (L2)": ["STDT 2", "STDT 2 (2)", "STDT 2 (3)"],
+        "Standard Economy Room": ["lobi", "lobby"],
+      };
+
+      /* ===== 3) Loader gambar: coba .jpg/.jpeg/.png ===== */
+      const EXT = [".jpg", ".jpeg", ".png"];
+      function tryLoadOne(src) {
+        return new Promise((res) => {
+          const im = new Image();
+          im.onload = () => res(src);
+          im.onerror = () => res(null);
+          im.src = src;
+        });
+      }
+      async function loadFirstAvailable(cands) {
+        for (const base of cands) {
+          for (const ex of EXT) {
+            const hit = await tryLoadOne(`${base}${ex}`);
+            if (hit) return hit;
+          }
+        }
+        return "room.jpg"; // fallback
+      }
+
+      /* ===== 4) Render grid + pasang gambar ===== */
+      const grid = document.getElementById("grid");
+
+      function render() {
+        grid.innerHTML =
+          rooms
+            .map(
+              (r) => `
+    <div class="card">
+      <div class="imgbox">
+        <img data-room-img="${r.id}" src="room.jpg" alt="${r.name}">
+        <button class="del-img" onclick="removeImage(${
+          r.id
+        })">Hapus Foto</button>
+      </div>
+      <div class="card-b">
+        <h3>${r.name}</h3>
+        <p>👥 ${r.cap} Orang</p>
+        <div class="price">Rp. ${r.price.toLocaleString("id-ID")}/night</div>
+        <div class="btns">
+          <button class="btn btn-edit" onclick="editRoom(${r.id})">Edit</button>
+          <button class="btn btn-del" onclick="deleteRoom(${
+            r.id
+          })">Delete</button>
+        </div>
+      </div>
+    </div>
+  `
+            )
+            .join("") +
+          `
+    <a class="add-card" href="tambah-kamar.html">
+      <div style="font-size:22px">＋</div>
+      Tambah Kamar Baru<br><small>Klik untuk menambahkan kamar baru</small>
+    </a>`;
+
+        rooms.forEach(async (r) => {
+          const cands = IMG_MAP[r.name] || [];
+          const src = await loadFirstAvailable(cands);
+          const img = grid.querySelector(`[data-room-img="${r.id}"]`);
+          if (img) img.src = src;
+        });
+      }
+
+      /* ===== Actions (dummy FE) ===== */
+      function editRoom(id) {
+        window.location.href = "edit-kamar.html?id=" + id;
+      }
+      function deleteRoom(id) {
+        if (confirm("Hapus kamar ini?")) {
+          const i = rooms.findIndex((x) => x.id === id);
+          if (i > -1) {
+            rooms.splice(i, 1);
+            render();
+          }
+        }
+      }
+      function removeImage(id) {
+        const img = grid.querySelector(`[data-room-img="${id}"]`);
+        if (img) {
+          img.src = "room.jpg";
+        }
+      }
+
+      render();
+    </script>
+  </body>
+</html>

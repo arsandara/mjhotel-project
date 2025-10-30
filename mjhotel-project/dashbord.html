@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --brand: #0e4c2f;
+        --brand-2: #065238;
+        --brand-2-20: rgba(6, 82, 56, 0.2);
+        --bg: #f1f5f9;
+        --text: #111827;
+        --muted: #475569;
+        --border: #e5e7eb;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --side-w: 260px;
+
+        --green-bg: rgba(6, 124, 56, 0.12);
+        --green: #0a7a3e;
+        --green-br: rgba(6, 124, 56, 0.25);
+        --amber-bg: rgba(245, 158, 11, 0.16);
+        --amber: #b45309;
+        --amber-br: rgba(245, 158, 11, 0.3);
+        --red-bg: rgba(239, 68, 68, 0.12);
+        --red: #b91c1c;
+        --red-br: rgba(239, 68, 68, 0.25);
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: var(--side-w) 1fr;
+        min-height: 100svh;
+      }
+
+      /* Sidebar */
+      aside {
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 4px 12px;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        object-fit: contain;
+      }
+      .brand .meta b {
+        font-size: 16px;
+      }
+      .brand .meta small {
+        color: #6b7280;
+        font-size: 12px;
+      }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        color: #0f172a;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.2s;
+      }
+      .menu a svg {
+        width: 22px;
+        height: 22px;
+      }
+      .menu a.active {
+        background: var(--brand-2-20);
+      }
+      .menu a:hover {
+        background: rgba(6, 82, 56, 0.08);
+      }
+      .logout {
+        margin-top: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-align: center;
+        color: #374151;
+        background: #f3f4f6;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .logout:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      /* Main */
+      main {
+        padding: 24px;
+      }
+      .page-title {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .subtitle {
+        color: #64748b;
+        margin-bottom: 16px;
+        font-size: 13.5px;
+      }
+
+      /* Card & table */
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .card-h {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .card-h h3 {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .card-b {
+        padding: 14px;
+      }
+
+      .table-wrap {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+      }
+      th,
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      th {
+        background: #f9fafb;
+        text-align: left;
+        font-size: 12.5px;
+        color: #334155;
+      }
+      td {
+        font-size: 13px;
+      }
+      .email-green {
+        color: var(--brand-2);
+        font-weight: 600;
+      }
+
+      /* col width & align supaya sejajar antara 2 tabel bawah */
+      .cols-ks th:nth-child(1),
+      .cols-ks td:nth-child(1) {
+        width: 58%;
+        text-align: left;
+      }
+      .cols-ks th:nth-child(2),
+      .cols-ks td:nth-child(2) {
+        width: 42%;
+        text-align: center;
+      } /* kolom status center */
+
+      /* Pager */
+      .pager {
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .pager button {
+        min-width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .pager .is-active {
+        background: var(--brand-2-20);
+        border-color: rgba(6, 82, 56, 0.35);
+      }
+
+      /* Buttons */
+      .btn {
+        height: 42px;
+        border: 0;
+        border-radius: 10px;
+        padding: 0 16px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+        width: 100%;
+      } /* penuh sepanjang card */
+      .btn-primary:hover {
+        opacity: 0.95;
+      }
+
+      /* ==== Chips ==== */
+      /* toggle Ready/Sold (simple, tanpa panah) */
+      .chip-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.06s ease;
+      }
+      .chip-toggle:active {
+        transform: scale(0.98);
+      }
+      .chip--ready {
+        background: var(--green-bg);
+        color: var(--green);
+        border-color: var(--green-br);
+      }
+      .chip--sold {
+        background: var(--red-bg);
+        color: var(--red);
+        border-color: var(--red-br);
+      }
+
+      /* select chip untuk status reservasi */
+      .chip-select {
+        position: relative;
+        display: inline-block;
+      }
+      .chip-select select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        height: 32px;
+        min-width: 110px;
+        padding: 0 28px 0 12px;
+        background: #fff;
+        font-family: "Geist", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .chip-select.ready select {
+        background: var(--green-bg);
+        color: var(--green);
+        border-color: var(--green-br);
+      }
+      .chip-select.pending select {
+        background: var(--amber-bg);
+        color: var(--amber);
+        border-color: var(--amber-br);
+      }
+      .chip-select.cancelled select {
+        background: var(--red-bg);
+        color: var(--red);
+        border-color: var(--red-br);
+      }
+      .chip-select:after {
+        content: "▾";
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      @media (max-width: 900px) {
+        :root {
+          --side-w: 84px;
+        }
+        .brand .meta {
+          display: none;
+        }
+        .menu a span {
+          display: none;
+        }
+      }
+      @media (max-width: 820px) {
+        main {
+          padding: 16px;
+        }
+        .page-title {
+          font-size: 22px;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      @media (max-width: 820px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside>
+        <div class="brand">
+          <img src="logo.png" alt="Hotel Mukti Jaya" />
+          <div class="meta">
+            <b>Hotel Mukti Jaya</b><br /><small>Admin Panel</small>
+          </div>
+        </div>
+
+        <nav class="menu" id="sideMenu">
+          <a href="#" class="active">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="14" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" /></svg
+            ><span>Dashboard</span>
+          </a>
+          <a href="checkin.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12h12" />
+              <path d="m15 18 6-6-6-6" />
+              <path d="M3 3v18" /></svg
+            ><span>Check In</span></a
+          >
+          <a href="checkout.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 12H3" />
+              <path d="m9 18-6-6 6-6" />
+              <path d="M21 3v18" /></svg
+            ><span>Check Out</span></a
+          >
+          <a href="landing.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" /></svg
+            ><span>Landing Page</span></a
+          >
+        </nav>
+
+        <div
+          class="logout"
+          onclick="if(confirm('Yakin ingin logout?')) window.location.href='admin-login.html'"
+        >
+          Logout
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="subtitle">
+          Pada halaman ini, admin dapat melihat reservasi terbaru, memperbarui
+          status kamar, dan mengecek ketersediaan nomor kamar.
+        </p>
+
+        <!-- Reservasi Terbaru -->
+        <section class="card">
+          <div class="card-h"><h3>Reservasi Terbaru</h3></div>
+          <div class="card-b">
+            <div class="table-wrap">
+              <table id="reservasiTbl">
+                <thead>
+                  <tr>
+                    <th style="width: 28%">Tamu</th>
+                    <th style="width: 20%">Kamar</th>
+                    <th style="width: 14%">Check In</th>
+                    <th style="width: 24%">Catatan</th>
+                    <th style="width: 14%">Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pager" id="pager"></div>
+          </div>
+        </section>
+
+        <!-- Status & Ketersediaan -->
+        <section class="grid-2">
+          <!-- Status Kamar -->
+          <div class="card">
+            <div class="card-h">
+              <h3>Status Kamar</h3>
+              <input
+                type="date"
+                id="statusDate"
+                style="
+                  border: 1px solid var(--border);
+                  border-radius: 8px;
+                  padding: 6px 10px;
+                  font-family: 'Geist', sans-serif;
+                  font-size: 13px;
+                "
+              />
+            </div>
+            <div class="card-b">
+              <div class="table-wrap">
+                <table class="cols-ks">
+                  <thead>
+                    <tr>
+                      <th>Kamar</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="statusBody"></tbody>
+                </table>
+              </div>
+              <!-- Update full width -->
+              <div style="margin-top: 12px">
+                <button class="btn btn-primary" id="btnUpdate">Update</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ketersediaan Kamar -->
+          <div class="card">
+            <div class="card-h"><h3>Ketersediaan Kamar</h3></div>
+            <div class="card-b">
+              <div class="table-wrap">
+                <table class="cols-ks">
+                  <thead>
+                    <tr>
+                      <th>Kamar</th>
+                      <th>Nomor Kamar</th>
+                    </tr>
+                  </thead>
+                  <tbody id="availBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* Sidebar highlight */
+      document.getElementById("sideMenu").addEventListener("click", (e) => {
+        const a = e.target.closest('a[href="#"]');
+        if (!a) return;
+        e.preventDefault();
+        [...e.currentTarget.querySelectorAll("a")].forEach((x) =>
+          x.classList.remove("active")
+        );
+        a.classList.add("active");
+      });
+
+      /* Dummy reservasi + pager */
+      const RESERVASI = [
+        {
+          nama: "Morgan Vero",
+          email: "hidupjokowi@gmail.com",
+          tel: "0812345678",
+          kamar: "Suite Twin Bed",
+          checkin: "2026-01-15",
+          catatan: "mau kamar lantai 2",
+          status: "Pending",
+        },
+        {
+          nama: "Morgan Vero",
+          email: "hidupjokowi@gmail.com",
+          tel: "0812345678",
+          kamar: "Suite Twin Bed",
+          checkin: "2026-01-15",
+          catatan: "mau kamar lantai 2, tolong tambah handuk dan incognito",
+          status: "Confirmed",
+        },
+        {
+          nama: "Morgan Vero",
+          email: "hidupjokowi@gmail.com",
+          tel: "0812345678",
+          kamar: "Suite Twin Bed",
+          checkin: "2026-01-15",
+          catatan: "mau kamar lantai 2",
+          status: "Confirmed",
+        },
+        {
+          nama: "Morgan Vero",
+          email: "hidupjokowi@gmail.com",
+          tel: "0812345678",
+          kamar: "Suite Twin Bed",
+          checkin: "2026-01-15",
+          catatan: "-",
+          status: "Confirmed",
+        },
+        {
+          nama: "Morgan Vero",
+          email: "hidupjokowi@gmail.com",
+          tel: "0812345678",
+          kamar: "Suite Twin Bed",
+          checkin: "2026-01-15",
+          catatan: "-",
+          status: "Confirmed",
+        },
+        {
+          nama: "Tamu Lain",
+          email: "tamu@sample.com",
+          tel: "0812000000",
+          kamar: "Deluxe Double Bed",
+          checkin: "2026-01-14",
+          catatan: "-",
+          status: "Cancelled",
+        },
+      ].sort((a, b) => b.checkin.localeCompare(a.checkin));
+
+      const PER_PAGE = 5;
+      let page = 1;
+      const tbody = document.querySelector("#reservasiTbl tbody");
+      const pager = document.getElementById("pager");
+
+      function chipClassStatus(v) {
+        const k = v.toLowerCase();
+        if (k === "confirmed") return "ready";
+        if (k === "pending") return "pending";
+        return "cancelled";
+      }
+
+      function drawReservasi() {
+        const total = RESERVASI.length,
+          totalPage = Math.max(1, Math.ceil(total / PER_PAGE));
+        page = Math.max(1, Math.min(page, totalPage));
+        const start = (page - 1) * PER_PAGE,
+          rows = RESERVASI.slice(start, start + PER_PAGE);
+
+        tbody.innerHTML = rows
+          .map(
+            (r) => `
+        <tr>
+          <td><div style="display:flex;flex-direction:column;gap:4px">
+            <b style="font-weight:700">${r.nama}</b>
+            <span class="email-green">${r.email}</span>
+            <small style="color:#64748b">${r.tel}</small>
+          </div></td>
+          <td>${r.kamar}</td>
+          <td>${new Date(r.checkin).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}</td>
+          <td>${r.catatan && r.catatan !== "-" ? r.catatan : "-"}</td>
+          <td>
+            <label class="chip-select ${chipClassStatus(r.status)}">
+              <select data-resv-status>
+                <option value="Pending" ${
+                  r.status === "Pending" ? "selected" : ""
+                }>Pending</option>
+                <option value="Confirmed" ${
+                  r.status === "Confirmed" ? "selected" : ""
+                }>Confirmed</option>
+                <option value="Cancelled" ${
+                  r.status === "Cancelled" ? "selected" : ""
+                }>Cancelled</option>
+              </select>
+            </label>
+          </td>
+        </tr>
+      `
+          )
+          .join("");
+
+        // style chip sesuai value saat berubah
+        tbody.querySelectorAll("[data-resv-status]").forEach((sel) => {
+          const wrap = sel.parentElement;
+          const setClass = () => {
+            wrap.classList.remove("ready", "pending", "cancelled");
+            const k = sel.value.toLowerCase();
+            wrap.classList.add(k === "confirmed" ? "ready" : k);
+          };
+          sel.addEventListener("change", setClass);
+          setClass();
+        });
+
+        let html = "";
+        const btn = (t, p, dis = false, act = false) =>
+          `<button ${dis ? "disabled" : ""} class="${
+            act ? "is-active" : ""
+          }" onclick="gotoPage(${p})">${t}</button>`;
+        html += btn("‹", page - 1, page <= 1);
+        for (let i = 1; i <= totalPage; i++)
+          html += btn(i, i, false, i === page);
+        html += btn("›", page + 1, page >= totalPage);
+        pager.innerHTML = html;
+      }
+      window.gotoPage = (p) => {
+        page = p;
+        drawReservasi();
+      };
+      drawReservasi();
+
+      /* Status Kamar: chip toggle sederhana */
+      const ROOM_TYPES = [
+        "Suite Double Bed",
+        "Suite Twin Bed",
+        "Deluxe Double Bed",
+        "Deluxe Twin Bed",
+        "Superior Double Bathub",
+        "Superior Double Tanpa Bathub",
+        "Superior Twin Bed",
+        "Standard Double Bed",
+        "Standard Twin Bed",
+      ];
+      const statusBody = document.getElementById("statusBody");
+      const statusDate = document.getElementById("statusDate");
+      const isoToday = new Date().toISOString().slice(0, 10);
+      statusDate.min = isoToday;
+      statusDate.value = isoToday;
+
+      statusBody.innerHTML = ROOM_TYPES.map(
+        (t, i) => `
+      <tr>
+        <td>${t}</td>
+        <td><button type="button" class="chip-toggle chip--ready" data-index="${i}" data-state="Ready">Ready</button></td>
+      </tr>
+    `
+      ).join("");
+
+      function toggleChip(btn) {
+        const next = btn.dataset.state === "Ready" ? "Sold" : "Ready";
+        btn.dataset.state = next;
+        btn.textContent = next;
+        btn.className =
+          "chip-toggle " + (next === "Ready" ? "chip--ready" : "chip--sold");
+      }
+      statusBody.addEventListener("click", (e) => {
+        const b = e.target.closest(".chip-toggle");
+        if (!b) return;
+        toggleChip(b);
+      });
+
+      document.getElementById("btnUpdate").addEventListener("click", () => {
+        const payload = [...statusBody.querySelectorAll(".chip-toggle")].map(
+          (b, i) => ({
+            date: statusDate.value,
+            type: ROOM_TYPES[i],
+            status: b.dataset.state,
+          })
+        );
+        console.log("UPDATE_STATUS", payload);
+        alert("Status tersimpan untuk tanggal " + statusDate.value);
+      });
+
+      /* Ketersediaan Kamar */
+      const ROOM_NUMBERS = {
+        "Suite Double Bed": ["121", "122", "131", "132"],
+        "Suite Twin Bed": [
+          "211",
+          "212",
+          "221",
+          "222",
+          "231",
+          "232",
+          "233",
+          "234",
+          "235",
+          "236",
+        ],
+        "Deluxe Double Bed": [
+          "312",
+          "313",
+          "314",
+          "321",
+          "322",
+          "323",
+          "324",
+          "325",
+          "326",
+          "327",
+          "328",
+        ],
+        "Deluxe Twin Bed": [
+          "411",
+          "412",
+          "413",
+          "421",
+          "422",
+          "423",
+          "424",
+          "425",
+          "426",
+        ],
+        "Superior Double Bathub": ["101", "102", "103"],
+        "Superior Double Tanpa Bathub": ["104", "105", "106", "107", "108"],
+        "Superior Twin Bed": ["201", "202", "203", "204", "205"],
+        "Standard Double Bed": [
+          "431",
+          "432",
+          "433",
+          "441",
+          "442",
+          "443",
+          "451",
+          "452",
+          "453",
+        ],
+        "Standard Twin Bed": [
+          "461",
+          "462",
+          "463",
+          "471",
+          "472",
+          "481",
+          "482",
+          "491",
+          "492",
+          "493",
+          "494",
+        ],
+      };
+      const availBody = document.getElementById("availBody");
+      availBody.innerHTML = ROOM_TYPES.map(
+        (t) =>
+          `<tr><td>${t}</td><td>${(ROOM_NUMBERS[t] || []).join(", ")}</td></tr>`
+      ).join("");
+    </script>
+  </body>
+</html>

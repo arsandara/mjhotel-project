@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Kamar | Hotel Mukti Jaya</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --brand: #0e4c2f;
+        --brand-2: #065238;
+        --brand-2-20: rgba(6, 82, 56, 0.2);
+        --bg: #f1f5f9;
+        --text: #111827;
+        --muted: #475569;
+        --border: #e5e7eb;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --side-w: 260px;
+      }
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: var(--side-w) 1fr;
+        min-height: 100svh;
+      }
+
+      /* Sidebar (match desain) */
+      aside {
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 4px 12px;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 6px;
+      }
+      .brand .meta b {
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .brand .meta small {
+        color: #6b7280;
+        font-size: 12px;
+      }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        color: #0f172a;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.2s;
+      }
+      .menu a svg {
+        width: 22px;
+        height: 22px;
+      }
+      .menu a.active {
+        background: var(--brand-2-20);
+      }
+      .menu a:hover {
+        background: rgba(6, 82, 56, 0.08);
+      }
+      .logout {
+        margin-top: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        text-align: center;
+        color: #374151;
+        background: #f3f4f6;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .logout:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      /* Main */
+      main {
+        padding: 24px;
+      }
+
+      /* Page header sesuai contoh (tombol hijau kotak + judul) */
+      .page-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .page-header h1 {
+        font-size: 26px;
+        font-weight: 700;
+      }
+      .btn-back {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        background: var(--brand);
+        color: #fff;
+        border: 0;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-back:hover {
+        filter: brightness(0.95);
+      }
+      .btn-back svg {
+        width: 20px;
+        height: 20px;
+        stroke: #fff;
+        stroke-width: 2.2;
+      }
+      .subtitle {
+        color: #64748b;
+        margin-bottom: 16px;
+        font-size: 13.5px;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+      .card-b {
+        padding: 18px;
+      }
+
+      .form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        max-width: 980px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      label {
+        font-size: 13px;
+        color: #334155;
+      }
+      input[type="text"],
+      textarea {
+        height: 44px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 12px;
+        background: #fff;
+        font-size: 14px;
+        font-family: "Geist", sans-serif;
+        outline: none;
+      }
+      textarea {
+        height: auto;
+        min-height: 110px;
+        padding: 10px 12px;
+        line-height: 1.5;
+        resize: vertical;
+      }
+
+      /* Harga & Kapasitas tampilan */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 720px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      .input-affix {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .input-affix .affix {
+        position: absolute;
+        left: 10px;
+        color: #334155;
+        font-size: 14px;
+      }
+      .input-affix input {
+        padding-left: 38px;
+      }
+      .input-suffix {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .input-suffix .suffix {
+        position: absolute;
+        right: 10px;
+        color: #334155;
+        font-size: 14px;
+      }
+      .input-suffix input {
+        padding-right: 46px;
+      }
+
+      /* Gallery */
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .thumb {
+        position: relative;
+        width: 160px;
+        height: 100px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: #f3f4f6;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .thumb button {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        background: rgba(239, 68, 68, 0.92);
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        opacity: 0;
+        transition: 0.2s;
+      }
+      .thumb:hover button {
+        opacity: 1;
+      }
+      .addbox {
+        width: 160px;
+        height: 100px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        background: #fff;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 14px 18px;
+        border-top: 1px solid var(--border);
+      }
+      .btn {
+        height: 40px;
+        border: 0;
+        border-radius: 10px;
+        padding: 0 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn-ghost {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: #111;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        opacity: 0.95;
+      }
+
+      @media (max-width: 900px) {
+        :root {
+          --side-w: 84px;
+        }
+        .brand .meta {
+          display: none;
+        }
+        .menu a span {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside>
+        <div class="brand">
+          <img src="logo.png" alt="Hotel Mukti Jaya" />
+          <div class="meta">
+            <b>Hotel Mukti Jaya</b><br /><small>Admin Panel</small>
+          </div>
+        </div>
+        <nav class="menu">
+          <a href="dashboard.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="14" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" /></svg
+            ><span>Dashboard</span>
+          </a>
+          <a href="checkin.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12h12" />
+              <path d="m15 18 6-6-6-6" />
+              <path d="M3 3v18" /></svg
+            ><span>Check In</span>
+          </a>
+          <a href="checkout.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 12H3" />
+              <path d="m9 18-6-6 6-6" />
+              <path d="M21 3v18" /></svg
+            ><span>Check Out</span>
+          </a>
+          <a class="active" href="landing.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" /></svg
+            ><span>Landing Page</span>
+          </a>
+        </nav>
+        <div
+          class="logout"
+          onclick="if(confirm('Yakin ingin logout?')) window.location.href='admin-login.html'"
+        >
+          Logout
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main>
+        <div class="page-header">
+          <button
+            class="btn-back"
+            onclick="window.location.href='landing.html'"
+            aria-label="Kembali"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <h1>Edit Kamar</h1>
+        </div>
+        <p class="subtitle">
+          Pada halaman ini, admin dapat mengubah detail informasi kamar seperti
+          nama kamar, foto, harga, kapasitas, fasilitas, dan peraturan.
+        </p>
+
+        <section class="card">
+          <form id="roomForm">
+            <div class="card-b">
+              <div class="form">
+                <!-- Nama Kamar -->
+                <div class="field">
+                  <label>Nama Kamar</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="mis. Suite Double Bed (Lantai 1)"
+                    required
+                  />
+                </div>
+
+                <!-- Foto Kamar -->
+                <div class="field">
+                  <label>Foto Kamar</label>
+                  <div class="gallery" id="gallery"></div>
+                  <div class="addbox" id="addPhoto">+ Tambah Gambar</div>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/*"
+                    multiple
+                    hidden
+                  />
+                </div>
+
+                <!-- Harga & Kapasitas -->
+                <div class="two-col">
+                  <div class="field">
+                    <label>Harga</label>
+                    <div class="input-affix">
+                      <span class="affix">Rp</span>
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        name="price"
+                        placeholder="345000"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label>Kapasitas</label>
+                    <div class="input-suffix">
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        name="capacity"
+                        placeholder="2"
+                        required
+                      />
+                      <span class="suffix">Tamu</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fasilitas -->
+                <div class="field">
+                  <label>Fasilitas</label>
+                  <textarea
+                    name="facilities"
+                    placeholder="Freezer, teko listrik, teh & kopi, microwave, smart TV, WiFi, amenities"
+                  ></textarea>
+                </div>
+
+                <!-- Peraturan -->
+                <div class="field">
+                  <label>Peraturan</label>
+                  <textarea
+                    name="rules"
+                    placeholder="1. Batas Check Out pukul 12:00 WIB&#10;2. Tambahan sewa 25%: 12:00–15:00 WIB&#10;3. Tambahan sewa 50%: 15:00–18:00 WIB&#10;4. Tambahan sewa 100%: > 18:00 WIB"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="btn btn-ghost"
+                onclick="window.location.href='landing.html'"
+              >
+                Cancel
+              </button>
+              <button class="btn btn-primary">Simpan</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // ===== Helper angka =====
+      const onlyDigits = (s) => (s || "").replace(/[^\d]/g, "");
+      const formatRp = (n) => Number(n || 0).toLocaleString("id-ID");
+
+      // ===== Ambil ID dari query (opsional) =====
+      const params = new URLSearchParams(location.search);
+      const roomId = params.get("id") || "new";
+
+      // ===== Gallery state (FE) =====
+      let photos = []; // dataURL array
+
+      const gallery = document.getElementById("gallery");
+      const fileInput = document.getElementById("fileInput");
+      const addPhoto = document.getElementById("addPhoto");
+
+      addPhoto.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", async (e) => {
+        const files = [...e.target.files];
+        for (const f of files) {
+          const url = await toDataURL(f);
+          photos.push(url);
+        }
+        e.target.value = "";
+        drawGallery();
+      });
+
+      function toDataURL(file) {
+        return new Promise((res) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.readAsDataURL(file);
+        });
+      }
+
+      function drawGallery() {
+        gallery.innerHTML = photos
+          .map(
+            (src, i) => `
+        <div class="thumb">
+          <img src="${src}" alt="Foto kamar ${i + 1}"/>
+          <button type="button" onclick="removePhoto(${i})">Hapus</button>
+        </div>
+      `
+          )
+          .join("");
+      }
+      window.removePhoto = (i) => {
+        photos.splice(i, 1);
+        drawGallery();
+      };
+
+      // ===== Form =====
+      const form = document.getElementById("roomForm");
+      const inputPrice = form.price;
+      const inputCap = form.capacity;
+
+      inputPrice.addEventListener("input", () => {
+        const raw = onlyDigits(inputPrice.value);
+        inputPrice.value = formatRp(raw);
+        inputPrice.dataset.raw = raw; // simpan angka murni
+      });
+
+      inputCap.addEventListener("input", () => {
+        inputCap.value = onlyDigits(inputCap.value);
+      });
+
+      // ===== Draft localStorage (demo FE) =====
+      const LS_KEY = "hmj_edit_room_" + roomId;
+      const draft = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+      if (draft) {
+        form.name.value = draft.name || "";
+        inputPrice.value = formatRp(draft.price || "");
+        inputPrice.dataset.raw = draft.price || "";
+        inputCap.value = draft.capacity || "";
+        form.facilities.value = draft.facilities || "";
+        form.rules.value = draft.rules || "";
+        photos = draft.photos || [];
+        drawGallery();
+      } else {
+        // default contoh
+        form.name.value = "Suite Double Bed (Lantai 1)";
+        inputPrice.value = formatRp("345000");
+        inputPrice.dataset.raw = "345000";
+        inputCap.value = "2";
+        form.facilities.value =
+          "Freezer, teko listrik, teh & kopi, microwave, smart TV, WiFi, amenities";
+        form.rules.value =
+          "1. Batas Check Out pukul 12:00 WIB\n2. Tambahan sewa 25%: 12:00–15:00 WIB\n3. Tambahan sewa 50%: 15:00–18:00 WIB\n4. Tambahan sewa 100%: > 18:00 WIB";
+        photos = [];
+        drawGallery();
+      }
+
+      // ===== Submit =====
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const payload = {
+          id: roomId,
+          name: form.name.value.trim(),
+          price: Number(
+            inputPrice.dataset.raw || onlyDigits(inputPrice.value) || 0
+          ),
+          capacity: Number(onlyDigits(inputCap.value) || 0),
+          facilities: form.facilities.value.trim(),
+          rules: form.rules.value.trim(),
+          photos: photos,
+        };
+        localStorage.setItem(LS_KEY, JSON.stringify(payload));
+        alert("Data kamar disimpan (demo FE).");
+        window.location.href = "landing.html";
+      });
+    </script>
+  </body>
+</html>
