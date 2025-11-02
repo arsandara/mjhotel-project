@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->string('room_id', 20)->primary();
             $table->string('room_name', 100);
+            $table->string('room_type', 100);
             $table->decimal('room_price', 10, 2);
             $table->string('room_capacity', 50);
             $table->text('room_facility');

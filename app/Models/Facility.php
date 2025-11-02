@@ -20,4 +20,9 @@ class Facility extends Model
         'facility_name',
         'facility_image',
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }

@@ -45,4 +45,16 @@ class Reservation extends Model
     {
         return $this->belongsTo(RoomBooking::class, 'room_booking_id', 'room_booking_id');
     }
+
+    // Database Relationships & Scopes
+    public function scopePending($query)
+    {
+        return $query->where('booking_status', 'Pending');
+    }
+
+    public function scopeForCheckIn($query)
+    {
+        return $query->where('booking_status', 'Confirmed')
+                    ->where('check_in', '<=', now());
+    }
 }

@@ -14,7 +14,7 @@ class ReservationSeeder extends Seeder
         Reservation::truncate();
 
         Reservation::create([
-            'reservation_id' => 'rsv_01',
+            'reservation_id' => '#0001',
             'room_booking_id' => 'room_booking_3',
             'customer_name' => 'Morgan Vero',
             'customer_birthdate' => '2003-04-15',
@@ -25,8 +25,8 @@ class ReservationSeeder extends Seeder
             'check_out' => Carbon::create(2026, 1, 18, 12, 0, 0),
             'duration' => 3,
             'capacity' => 2, 
-            'room_price' => 345000.00, // SESUAIKAN HARGA Suite Twin Bed
-            'total_price' => 1035000.00, // 345,000 x 3
+            'room_price' => 345000.00,
+            'total_price' => 1035000.00,
             'booking_status' => 'Confirmed',
         ]);
     }

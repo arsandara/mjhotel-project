@@ -9,24 +9,26 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $table = 'rooms';
+    // TAMBAHKAN INI - kasih tau primary key nya room_id
     protected $primaryKey = 'room_id';
+    
+    // TAMBAHKAN INI - karena room_id adalah string, bukan auto increment
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = true;
 
     protected $fillable = [
         'room_id',
-        'room_name',
+        'room_name', 
+        'room_type',
         'room_price',
         'room_capacity', 
         'room_facility',
         'room_rules',
-        'room_amount',
-        'room_image',
+        'room_amount'
     ];
 
-    protected $casts = [
-        'room_price' => 'decimal:2',
-    ];
+    public function images()
+    {
+        return $this->hasMany(RoomImage::class, 'room_id', 'room_id');
+    }
 }
