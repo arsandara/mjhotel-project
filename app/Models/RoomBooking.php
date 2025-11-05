@@ -13,7 +13,6 @@ class RoomBooking extends Model
     protected $primaryKey = 'room_booking_id';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = true;
 
     protected $fillable = [
         'room_booking_id',
@@ -26,10 +25,11 @@ class RoomBooking extends Model
         'room_booking_amount',
         'room_booking_number',
         'room_booking_image',
-        'room_booking_status',
+        'room_booking_status'
     ];
 
     protected $casts = [
         'room_booking_price' => 'decimal:2',
+        'room_booking_amount' => 'integer'
     ];
 }

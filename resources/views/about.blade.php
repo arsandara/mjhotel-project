@@ -7,35 +7,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         /* =========================
-           Reset, Font & Variables
+        Reset, Font & Variables
         ========================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-          --brand: #0E4C2F;
-          --brand-dark: #08341F;
-          --bg: #f1f5f9;
-          --bg-soft: #D9E8EF;
-          --text: #111827;
-          --radius: 10px;
-          --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-          --nav-h: 60px;
+        --brand: #0E4C2F;
+        --brand-dark: #08341F;
+        --bg: #f1f5f9;
+        --bg-soft: #D9E8EF;
+        --text: #111827;
+        --radius: 10px;
+        --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        --nav-h: 60px;
         }
         html, body { height: 100%; }
         body {
-          font-family: "Geist", sans-serif;
-          color: var(--text);
-          background: var(--bg);
-          padding-top: var(--nav-h);
-          line-height: 1.5;
+        font-family: "Geist", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        padding-top: var(--nav-h);
+        line-height: 1.5;
         }
 
         .sr-only{
-          position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-          overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+        position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+        overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
         }
 
         /* =========================
-           NAVBAR
+        NAVBAR
         ========================= */
         .navbar {
             position: fixed; 
@@ -63,14 +63,14 @@
         }
 
         .nav-menu a {
-          color: #fff; 
-          text-decoration: none; 
-          margin-left: 20px;
-          padding: 6px 14px;
-          border-radius: 6px; 
-          font-weight: 500;
-          font-size: 0.95rem;
-          transition: background 0.25s ease;
+        color: #fff; 
+        text-decoration: none; 
+        margin-left: 20px;
+        padding: 6px 14px;
+        border-radius: 6px; 
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: background 0.25s ease;
         }
         .nav-menu a:hover { background: rgba(255, 255, 255, 0.2); }
         .nav-menu .active { background: #fff; color: var(--brand); font-weight: 600; }
@@ -85,7 +85,7 @@
         }
 
         /* =========================
-           HERO SECTION
+        HERO SECTION
         ========================= */
         .hero {
             display: flex; 
@@ -154,7 +154,7 @@
         }
 
         /* =========================
-           MAIN CONTENT - TENTANG
+        MAIN CONTENT - TENTANG
         ========================= */
         main {
             max-width: 1200px;
@@ -282,7 +282,7 @@
         }
 
         /* =========================
-           LOCATION SECTION
+        LOCATION SECTION
         ========================= */
         .location-section {
             margin-bottom: 50px;
@@ -321,7 +321,7 @@
         }
 
         /* =========================
-           FOOTER
+        FOOTER
         ========================= */
         .footer{
             width:100%;
@@ -377,7 +377,7 @@
         }
 
         /* =========================
-           RESPONSIVE DESIGN
+        RESPONSIVE DESIGN
         ========================= */
         @media (max-width: 1200px) {
             .hero-content {
@@ -481,28 +481,35 @@
                 overflow: hidden; 
             }
 
-            /* Hero Mobile */
+            /* Hero Mobile - PERBAIKAN DI SINI */
             .hero {
                 height: auto;
-                min-height: 400px;
+                min-height: 500px;
                 flex-direction: column;
+                padding: 20px;
+                gap: 20px;
             }
             
             .hero-image {
-                flex: 0 0 45%;
+                flex: 0 0 auto;
                 width: 100%;
+                height: 280px;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: var(--shadow);
             }
             
             .hero-image img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                object-position: center;
             }
             
             .hero-content {
                 flex: 1;
                 width: 100%;
-                padding: 40px 20px;
+                padding: 20px;
                 text-align: center;
                 align-items: center;
             }
@@ -568,16 +575,20 @@
         }
 
         @media (max-width: 480px) {
+            /* Hero Mobile Small - PERBAIKAN DI SINI */
             .hero {
-                min-height: 350px;
+                min-height: 450px;
+                padding: 16px;
+                gap: 16px;
             }
             
             .hero-image {
-                flex: 0 0 40%;
+                height: 240px;
+                border-radius: 12px;
             }
             
             .hero-content {
-                padding: 30px 15px;
+                padding: 16px;
             }
             
             .hero-content h1 {
@@ -618,8 +629,8 @@
         </button>
         <div class="nav-menu" id="navMenu">
             <a href="{{ url('/') }}">Home</a>
-            <a href="{{ url('/reservasi') }}">Reservasi</a>
-            <a href="{{ url('/tentang') }}" class="active">Tentang</a>
+            <a href="{{ route('reservation') }}">Reservasi</a>
+            <a href="{{ url('/about') }}" class="active">Tentang</a>
         </div>
     </nav>
 
@@ -631,7 +642,7 @@
         <div class="hero-content">
             <h1>Tentang <span>Kami</span></h1>
             <p>Mengenal lebih dekat Hotel Mukti Jaya - akomodasi nyaman dengan pelayanan terbaik di Purwokerto.</p>
-            <a href="{{ url('/reservasi') }}" class="btn">Pesan Kamar Sekarang</a>
+            <a href="{{ url('/reservation') }}" class="btn">Pesan Kamar Sekarang</a>
         </div>
     </section>
 
@@ -737,8 +748,8 @@
                     <p><strong>Alamat:</strong></p>
                     <p>Jl. Gerilya No.118, Windusara, Karangklesem,</p>
                     <p>Kec. Purwokerto Sel., Kabupaten Banyumas, Jawa Tengah 53144</p>
-                    <p><strong>Telepon:</strong> (021) 123-4567</p>
-                    <p><strong>Email:</strong> info@hotelmuktijaya.com</p>
+                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/628122720577" class="contact-link">08122720577</a></p>
+                    <p><strong>Email:</strong> <a href="mailto:hotelmuktijaya@gmail.com" class="contact-link">hotelmuktijaya@gmail.com</a></p>
                 </div>
             </div>
         </section>

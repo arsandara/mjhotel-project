@@ -154,11 +154,11 @@
         }
 
         /* =========================
-        WELCOME SECTION - JARAK DIKURANGI
+        WELCOME SECTION
         ========================= */
         .welcome-section {
             background: #fff;
-            padding: 40px 5% 20px; /* Top 40px, Bottom cuma 20px biar ga terlalu jauh */
+            padding: 40px 5% 20px;
             text-align: center;
         }
 
@@ -178,10 +178,10 @@
         }
 
         /* =========================
-        ROOM SECTION - JARAK ANTAR KATEGORI DIPERBESAR
+        ROOM SECTION
         ========================= */
         .rooms { 
-            padding: 30px 5% 60px; /* Top 30px (dekat welcome), Bottom 60px */
+            padding: 30px 5% 60px;
             background: #fff; 
         }
 
@@ -191,10 +191,9 @@
             font-weight: 700; 
             color: #1f2937; 
             margin-bottom: 40px;
-            margin-top: 60px; /* JARAK ANTAR KATEGORI KAMAR DIPERBESAR */
+            margin-top: 60px; 
         }
 
-        /* Kategori pertama ga perlu margin top */
         .section-title:first-of-type {
             margin-top: 0;
         }
@@ -652,7 +651,7 @@
     </style>
     </head>
     <body>
-    <!-- Navbar (DIKECILKAN) -->
+    <!-- Navbar -->
     <header class="navbar">
         <div class="logo-area">
             <img src="{{ asset('images/logo.png') }}" alt="Logo Hotel" class="logo" />
@@ -668,13 +667,13 @@
 
         <nav class="nav-menu" id="primary-nav">
             <a href="{{ url('/') }}" class="active">Home</a>
-            <a href="{{ url('/reservation') }}">Reservasi</a>
+            <a href="{{ route('reservation') }}">Reservasi</a>
             <a href="{{ url('/about') }}">Tentang</a>
         </nav>
     </header>
     
 
-    <!-- Hero Section (DIKECILKAN & DISEDERHANAKAN) -->
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-image">
             <img src="{{ asset('images/ataslanding.png') }}" alt="Hotel Mukti Jaya" />

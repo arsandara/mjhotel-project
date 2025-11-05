@@ -318,14 +318,18 @@ class RoomSeeder extends Seeder
                 'superior-twin-2-5.jpg'
             ],
             'Standard Double Bed (Lantai 1)' => [
-                'standard-double-1.jpg',
+                'standard-double-1.jpeg',
                 'standard-double-1-2.jpg',
-                'standard-double-1-3.jpg'
+                'standard-double-1-3.jpg',
+                'standard-double-1-4.jpg',
+                'standard-double-1-5.jpg'
             ],
             'Standard Double Bed (Lantai 2)' => [
                 'standard-double-2.jpg',
                 'standard-double-2-2.jpg',
-                'standard-double-2-3.jpg'
+                'standard-double-2-3.jpg',
+                'standard-double-2-4.jpg',
+                'standard-double-2-5.jpg'
             ],
             'Standard Twin Bed (Lantai 1)' => [
                 'standard-twin-1.jpg',
@@ -335,7 +339,7 @@ class RoomSeeder extends Seeder
                 'standard-twin-1-5.jpg'
             ],
             'Standard Twin Bed (Lantai 2)' => [
-                'standard-twin-2.jpeg',
+                'standard-twin-2.jpg',
                 'standard-twin-2-2.jpeg',
                 'standard-twin-2-3.jpeg',
                 'standard-twin-2-4.jpeg',
