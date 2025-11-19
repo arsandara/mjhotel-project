@@ -10,8 +10,10 @@ class RoomController extends Controller
 {
     public function show($id)
     {
-        // PASTIKAN load relationship images
-        $room = Room::with('images')->findOrFail($id);
+        $room = Room::with(['images' => function($query) {
+            $query->orderBy('sort_order', 'asc'); // ← INI YANG PENTING!
+        }])->findOrFail($id);
+        
         return view('public.room-detail', compact('room'));
     }
 }

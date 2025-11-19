@@ -179,15 +179,17 @@
         margin: 60px auto;
         padding: 30px;
       }
+
       .mosaic-gallery {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
-        grid-auto-rows: 200px;
+        grid-auto-rows: 140px;
         gap: 14px;
         padding: 14px;
         background: #fff;
         border-radius: 18px;
       }
+
       .gallery-item {
         position: relative;
         border-radius: 14px;
@@ -196,78 +198,97 @@
         cursor: zoom-in;
         transition: transform 0.3s;
       }
+
       .gallery-item:hover {
         transform: scale(1.02);
       }
+
       .gallery-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
       }
-      .landscape-img {
-        aspect-ratio: 16/9;
-      }
-      .portrait {
-        grid-column: span 4;
-        grid-row: span 4;
-      }
-      .portrait-img {
-        aspect-ratio: 3/4;
-        object-fit: cover;
-      }
 
-      /* Layout untuk 5 gambar */
-      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(1) {
-        grid-column: span 4;
-        grid-row: span 4;
-      }
-      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(2) {
-        grid-column: span 4;
-        grid-row: span 2;
-      }
-      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(3) {
-        grid-column: span 4;
-        grid-row: span 2;
-      }
-      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(4) {
-        grid-column: span 4;
-        grid-row: span 2;
-      }
-      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(5) {
-        grid-column: span 4;
-        grid-row: span 2;
-      }
-
-      .mosaic-gallery {
-        grid-template-columns: repeat(12, 1fr);
-        grid-auto-rows: 140px;
-        gap: 14px;
-        padding: 14px;
-        }
-        .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) {
-        grid-template-rows: repeat(3, 140px);
-        }
-        .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(1) {
-        grid-column: span 6;
-        grid-row: 1;
-        }
-        .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(2) {
-        grid-column: span 6;
-        grid-row: 1;
-        }
-        .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(3) {
+      /* Layout untuk 1 gambar */
+      .mosaic-gallery:has(.gallery-item:nth-child(1):last-child) .gallery-item {
         grid-column: span 12;
-        grid-row: span 2; /* Gambar ketiga setengah lebih tinggi dari baris 1 */
-        }
+        grid-row: span 4;
+      }
 
-        /* Layout untuk 4 gambar - sejajar 2x2 */
-        .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) .gallery-item {
+      /* Layout untuk 2 gambar */
+      .mosaic-gallery:has(.gallery-item:nth-child(2):last-child) .gallery-item:nth-child(1) {
+        grid-column: span 8;
+        grid-row: span 4;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(2):last-child) .gallery-item:nth-child(2) {
+        grid-column: span 4;
+        grid-row: span 4;
+      }
+
+      /* Layout untuk 3 gambar */
+      .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(1) {
+        grid-column: span 8;
+        grid-row: span 4;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(2) {
+        grid-column: span 4;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(3):last-child) .gallery-item:nth-child(3) {
+        grid-column: span 4;
+        grid-row: span 2;
+      }
+
+      /* Layout untuk 4 gambar - 2x2 grid */
+      .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) .gallery-item:nth-child(1) {
         grid-column: span 6;
-        }
-        .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) {
-        grid-template-rows: repeat(2, 200px); /* dua baris dengan tinggi 200px */
-        }
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) .gallery-item:nth-child(2) {
+        grid-column: span 6;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) .gallery-item:nth-child(3) {
+        grid-column: span 6;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(4):last-child) .gallery-item:nth-child(4) {
+        grid-column: span 6;
+        grid-row: span 2;
+      }
+
+      /* Layout untuk 5 gambar - DIUBAH: 1 besar kiri, 4 kecil kanan (2x2) */
+      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(1) {
+        grid-column: span 6;
+        grid-row: span 4;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(2) {
+        grid-column: span 3;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(3) {
+        grid-column: span 3;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(4) {
+        grid-column: span 3;
+        grid-row: span 2;
+      }
+
+      .mosaic-gallery:has(.gallery-item:nth-child(5):last-child) .gallery-item:nth-child(5) {
+        grid-column: span 3;
+        grid-row: span 2;
+      }
 
       .room-info {
         margin-top: 28px;
@@ -538,9 +559,6 @@
           grid-column: 1 !important;
           grid-row: auto !important;
         }
-        .portrait-img {
-          aspect-ratio: 16/9;
-        }
         .room-info h2 {
           font-size: 1.5rem;
         }
@@ -595,7 +613,6 @@
       }
     </style>
   </head>
-
   <body>
     <!-- ===== NAVBAR ===== -->
     <header class="navbar">
@@ -643,20 +660,16 @@
       </div>
     </section>
 
-        <!-- ===== ROOM SECTION ===== -->
+    <!-- ===== ROOM SECTION ===== -->
     <div class="room-container">
       <div class="mosaic-gallery">
-        @foreach($room->images as $index => $image)
-          @php
-            $isPortrait = $index == 0; // Gambar pertama adalah portrait (kamar mandi) untuk Suite
-          @endphp
-          <div class="gallery-item {{ $isPortrait ? 'portrait' : '' }}">
+        @foreach($room->images->sortBy('sort_order') as $index => $image)
+          <div class="gallery-item">
             <img
               src="{{ asset('images/rooms/' . $image->image_path) }}"
               alt="{{ $room->room_name }} - Foto {{ $index + 1 }}"
               loading="lazy"
               decoding="async"
-              class="{{ $isPortrait ? 'portrait-img' : 'landscape-img' }}"
             />
           </div>
         @endforeach
@@ -676,7 +689,6 @@
             @endif
           @endforeach
         </ul>
-        </div>
       </div>
     </div>
 
@@ -743,7 +755,7 @@
       </div>
     </div>
 
-    <!-- ===== SCRIPT ===== -->
+    <!-- ===== JAVASCRIPT ===== -->
     <script>
       // Navbar shadow
       window.addEventListener("scroll", () => {

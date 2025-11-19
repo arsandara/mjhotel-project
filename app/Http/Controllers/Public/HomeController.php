@@ -9,7 +9,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $rooms = Room::with('images')->get();
+        $rooms = Room::with(['images' => function($query) {
+            $query->orderBy('sort_order', 'asc'); // ← PENTING
+        }])->get();
+        
         return view('home', compact('rooms'));
     }
 }

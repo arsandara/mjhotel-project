@@ -28,6 +28,7 @@ class ReservationSeeder extends Seeder
             'room_price' => 345000.00,
             'total_price' => 1035000.00,
             'booking_status' => 'Confirmed',
+            'room_number' => '128',
         ]);
     }
 }

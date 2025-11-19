@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('room_booking', function (Blueprint $table) {
@@ -23,13 +20,13 @@ return new class extends Migration
             $table->string('room_booking_number', 100);
             $table->string('room_booking_image', 255)->nullable();
             $table->enum('room_booking_status', ['Ready', 'Sold'])->default('Ready');
+            $table->enum('availability_status', ['Available', 'Unavailable'])
+                  ->default('Available')
+                  ->comment('Status yang dikontrol manual oleh admin untuk tampil/tidak di public');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('room_booking');

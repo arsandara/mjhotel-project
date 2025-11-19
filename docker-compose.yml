@@ -4,9 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8001:8000" # ubah ke 8001 supaya ga bentrok sama Odoo
+      - "8001:8000"
     volumes:
       - .:/var/www/html
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/uploads.ini  # TAMBAH INI DI SINI
     depends_on:
       - db
 
@@ -30,7 +31,7 @@ services:
       PMA_USER: root
       PMA_PASSWORD: root
     ports:
-      - "8081:80" # ubah ke 8081 supaya ga bentrok sama pgAdmin
+      - "8081:80"
 
 volumes:
-  db_data:
+  db_data:  # INI TETEP DI SINI (untuk MySQL data)

@@ -30,6 +30,7 @@ class Reservation extends Model
         'total_price',
         'booking_status',
         'room_booking_id',
+        'room_number',
     ];
 
     protected $casts = [
@@ -56,5 +57,11 @@ class Reservation extends Model
     {
         return $query->where('booking_status', 'Confirmed')
                     ->where('check_in', '<=', now());
+    }
+
+    // Ambil nama kamar dari relasi
+    public function getRoomNameAttribute()
+    {
+        return $this->roomBooking ? $this->roomBooking->room_booking_name : 'Unknown';
     }
 }

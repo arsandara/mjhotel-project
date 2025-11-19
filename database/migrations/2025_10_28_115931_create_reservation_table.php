@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('capacity', 50)->nullable();
             $table->decimal('room_price', 10, 2)->nullable();
             $table->decimal('total_price', 10, 2);
-            $table->enum('booking_status', ['Pending', 'Confirmed', 'Cancelled'])->default('Pending');
+            $table->enum('booking_status', ['Pending', 'Confirmed', 'Cancelled', 'Checked Out', 'Checked In'])->default('Pending');
             $table->string('room_booking_id', 50)->nullable();
+             $table->string('room_number', 10)->nullable();
             $table->timestamps();
             // Foreign key ke room_booking
             $table->foreign('room_booking_id')->references('room_booking_id')->on('room_booking')->onDelete('cascade');

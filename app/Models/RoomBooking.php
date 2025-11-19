@@ -25,7 +25,8 @@ class RoomBooking extends Model
         'room_booking_amount',
         'room_booking_number',
         'room_booking_image',
-        'room_booking_status'
+        'room_booking_status',
+        'availability_status',
     ];
 
     protected $casts = [
