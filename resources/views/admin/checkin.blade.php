@@ -11,7 +11,6 @@
     />
 
     <style>
-      /* CSS tetap sama seperti sebelumnya */
       * {
         margin: 0;
         padding: 0;
@@ -228,15 +227,27 @@
         justify-content: flex-end;
       }
       .icon-btn {
-        width: 34px;
-        height: 34px;
-        border: 0;
-        border-radius: 8px;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-        color: #fff;
-      }
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .icon-btn:hover {
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        .icon-btn:active {
+            transform: translateY(-1px) scale(1.05);
+        }
       .icon-btn svg {
         width: 16px;
         height: 16px;
@@ -350,728 +361,462 @@
         border: 1px solid var(--border);
         color: #111;
       }
+      .dialog-f .btn {
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .dialog-f .btn::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.15);
+          opacity: 0;
+          transition: opacity 0.25s ease;
+          border-radius: 10px;
+      }
+      .dialog-f .btn:hover::before {
+          opacity: 1;
+      }
 
+      .dialog-f .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      }
+      .dialog-f .btn-primary:hover {
+          background: #0a3d25 !important; 
+      }
+      .dialog-f .btn-ghost:hover {
+          background: #e5e7eb !important;
+          border-color: #d1d5db !important;
+          color: #111 !important;
+      }
       /* Modal kecil (edit nomor kamar) */
       .dialog.slim {
         width: min(520px, 92vw);
       }
-    </style>
+   </style>
 </head>
-<body>
-    <div class="app">
-        <!-- Sidebar -->
-        <aside>
-            <div class="brand">
-                <img src="{{ asset('images/logo.png') }}" alt="Hotel Mukti Jaya" />
-                <div class="meta">
-                    <b>Hotel Mukti Jaya</b><br /><small>Admin Panel</small>
+    <body>
+        <div class="app">
+            <!-- Sidebar -->
+            <aside>
+                <div class="brand">
+                    <img src="{{ asset('images/logo.png') }}" alt="Hotel Mukti Jaya" />
+                    <div class="meta"><b>Hotel Mukti Jaya</b><br><small>Admin Panel</small></div>
                 </div>
-            </div>
 
-            <nav class="menu" id="sideMenu">
-                <a href="{{ route('admin.dashboard') }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7" rx="2" />
-                        <rect x="14" y="3" width="7" height="7" rx="2" />
-                        <rect x="14" y="14" width="7" height="7" rx="2" />
-                        <rect x="3" y="14" width="7" height="7" rx="2" />
-                    </svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ route('admin.checkin') }}" class="active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 12h12" />
-                        <path d="m15 18 6-6-6-6" />
-                        <path d="M3 3v18" />
-                    </svg>
-                    <span>Reservasi</span>
-                </a>
-                <a href="{{ route('admin.checkout') }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 12H3" />
-                        <path d="m9 18-6-6 6-6" />
-                        <path d="M21 3v18" />
-                    </svg>
-                    <span>Tamu Menginap</span>
-                </a>
-                <a href="{{ route('admin.landing') }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="2" y1="12" x2="22" y2="12" />
-                        <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" />
-                    </svg>
-                    <span>Landing Page</span>
-                </a>
-            </nav>
+                <nav class="menu" id="sideMenu">
+                    <a href="{{ route('admin.dashboard') }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7" rx="2" />
+                            <rect x="14" y="3" width="7" height="7" rx="2" />
+                            <rect x="14" y="14" width="7" height="7" rx="2" />
+                            <rect x="3" y="14" width="7" height="7" rx="2" />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{{ route('admin.checkin') }}" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12h12" />
+                            <path d="m15 18 6-6-6-6" />
+                            <path d="M3 3v18" />
+                        </svg>
+                        <span>Reservasi</span>
+                    </a>
+                    <a href="{{ route('admin.checkout') }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 12H3" />
+                            <path d="m9 18-6-6 6-6" />
+                            <path d="M21 3v18" />
+                        </svg>
+                        <span>Tamu Menginap</span>
+                    </a>
+                    <a href="{{ route('admin.landing') }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path d="M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z" />
+                        </svg>
+                        <span>Landing Page</span>
+                    </a>
+                </nav>
 
-            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form" style="margin-top: auto;">
-                @csrf
-                <button type="submit" class="logout" onclick="return confirm('Yakin ingin logout?')" style="border: 0; width: 100%;">
-                    Logout
-                </button>
-            </form>
-        </aside>
+                <form action="{{ route('admin.logout') }}" method="POST" class="logout-form" style="margin-top: auto;">
+                    @csrf
+                    <button type="submit" class="logout" onclick="return confirm('Yakin ingin logout?')" style="border: 0; width: 100%;">
+                        Logout
+                    </button>
+                </form>
+            </aside>
 
-        <!-- Main -->
-        <main>
-            <h1 class="page-title">Reservasi</h1>
-            <p class="subtitle">
-                Pada halaman ini, admin dapat melakukan pengelolaan data reservasi, seperti menambah, mengedit<br>
-                dan menghapus data tamu yang melakukan reservasi.
-            </p>
+            <!-- Main Content -->
+            <main>
+                <h1 class="page-title">Reservasi</h1>
+                <p class="subtitle">Pada halaman ini, admin dapat melakukan pengelolaan data reservasi, seperti menambah, mengedit, dan<br>
+                  menghapus data tamu yang melakukan check-in.</p>
 
-            <div class="toolbar">
-                <button class="btn btn-primary" id="btnOpenAdd">
-                    Tambah Reservasi
-                </button>
-                <div class="search">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                    <input type="text" id="q" placeholder="Cari nama / kamar / email..." />
-                </div>
-            </div>
-
-            <section class="card">
-                <div class="card-b">
-                    <div class="table-wrap">
-                        <table id="tbl">
-                            <thead>
-                                <tr>
-                                    <th style="width: 8%">ID</th>
-                                    <th style="width: 18%">Nama Lengkap</th>
-                                    <th style="width: 16%">Kamar</th>
-                                    <th style="width: 12%">Check In</th>
-                                    <th style="width: 12%">Check Out</th>
-                                    <th style="width: 8%">Malam</th>
-                                    <th style="width: 14%">Total</th>
-                                    <th style="width: 12%; text-align: right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($reservations as $reservation)
-                                <tr data-id="{{ $reservation->reservation_id }}">
-                                    <td class="idcell">{{ $reservation->reservation_id }}</td>
-                                    <td>{{ $reservation->customer_name }}</td>
-                                    <td>
-                                        {{ $reservation->roomBooking->room_booking_name }}
-                                        @if($reservation->room_number)
-                                            <div style="color:#64748b;font-size:12px;margin-top:4px">No: {{ $reservation->room_number }}</div>
-                                        @endif
-                                    </td>
-                                    <td>{{ $reservation->check_in->format('d M Y') }}</td>
-                                    <td>{{ $reservation->check_out->format('d M Y') }}</td>
-                                    <td>{{ $reservation->duration }}</td>
-                                    <td class="money">Rp {{ number_format($reservation->total_price, 0, ',', '.') }}</td>
-                                    <td>
-                                        <div class="actions">
-                                            <button class="icon-btn b-yellow" data-edit title="Edit nomor kamar">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                            </button>
-                                            <!-- UBAH: data-checkout MENJADI data-checkin -->
-                                            <button class="icon-btn b-green" data-checkin title="Check In">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M9 12h12"/><path d="m15 18 6-6-6-6"/><path d="M3 3v18"/>
-                                                </svg>
-                                            </button>
-                                            <button class="icon-btn b-red" data-delete title="Hapus">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <polyline points="3 6 5 6 21 6"/>
-                                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                                    <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                <div class="toolbar">
+                    <button class="btn btn-primary" id="btnOpenAdd">Tambah Reservasi</button>
+                    <div class="search">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="q" placeholder="Cari nama / kamar / email..." />
                     </div>
                 </div>
-            </section>
-        </main>
-    </div>
 
-    <!-- Modals -->
-    <div class="modal" id="addModal" aria-hidden="true">
-        <div class="dialog">
-            <div class="dialog-h">Tambah Reservasi</div>
-            <form id="addForm">
-                @csrf
-                <div class="dialog-b">
-                    <div class="row">
+                <section class="card">
+                    <div class="card-b">
+                        <div class="table-wrap">
+                            <table id="tbl">
+                                <thead>
+                                    <tr>
+                                        <th style="width:15%">ID</th>
+                                        <th style="width:18%">Nama</th>
+                                        <th style="width:16%">Tipe Kamar</th>
+                                        <th style="width:12%">Check In</th>
+                                        <th style="width:12%">Check Out</th>
+                                        <th style="width:8%">Malam</th>
+                                        <th style="width:14%">Total</th>
+                                        <th style="width:12%;text-align:right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($reservations as $reservation)
+                                    <tr data-id="{{ $reservation->reservation_id }}" data-room-booking-id="{{ $reservation->room_booking_id }}">
+                                        <td class="idcell">{{ $reservation->reservation_id }}</td>
+                                        <td>{{ $reservation->customer_name }}</td>
+                                        <td>
+                                            {{ $reservation->roomBooking->room_booking_name }}
+                                            @if($reservation->room_number)
+                                                <div style="color:#22c55e;font-weight:600;font-size:13px;margin-top:4px">
+                                                    Kamar: {{ $reservation->room_number }}
+                                                </div>
+                                            @else
+                                                <div style="color:#f59e0b;font-size:12px;margin-top:4px;font-style:italic">
+                                                    Belum dialokasikan
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>{{ $reservation->check_in->format('d M Y') }}</td>
+                                        <td>{{ $reservation->check_out->format('d M Y') }}</td>
+                                        <td>{{ $reservation->duration }}</td>
+                                        <td class="money">Rp {{ number_format($reservation->total_price, 0, ',', '.') }}</td>
+                                        <td>
+                                            <div class="actions">
+                                                <!-- Edit / Assign Kamar -->
+                                                <button class="icon-btn b-yellow" data-edit title="{{ $reservation->room_number ? 'Edit' : 'Assign' }} nomor kamar">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M12 20h9"/>
+                                                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Check In (aktif hanya kalau sudah ada kamar) -->
+                                                @if($reservation->room_number)
+                                                    <button class="icon-btn b-green" data-checkin title="Check In">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M9 12h12"/><path d="m15 18 6-6-6-6"/><path d="M3 3v18"/>
+                                                        </svg>
+                                                    </button>
+                                                @else
+                                                    <button class="icon-btn b-green" disabled title="Assign kamar dulu">
+                                                        <svg opacity="0.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M9 12h12"/><path d="m15 18 6-6-6-6"/><path d="M3 3v18"/>
+                                                        </svg>
+                                                    </button>
+                                                @endif
+
+                                                <!-- Hapus -->
+                                                <button class="icon-btn b-red" data-delete title="Hapus">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <polyline points="3 6 5 6 21 6"/>
+                                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                                        <path d="M10 11v6"/><path d="M14 11v6"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Modal Tambah Reservasi Manual -->
+        <div class="modal" id="addModal">
+            <div class="dialog">
+                <div class="dialog-h">Tambah Reservasi</div>
+                <form id="addForm">
+                    @csrf
+                    <div class="dialog-b">
+                        <div class="row">
+                            <div class="field">
+                                <label>Tipe Kamar</label>
+                                <select name="room_booking_id" required>
+                                    <option value="">Pilih Tipe Kamar</option>
+                                    @foreach($availableRooms as $room)
+                                        <option value="{{ $room['id'] }}" data-price="{{ $room['price'] }}">
+                                            {{ $room['name'] }} - Rp {{ number_format($room['price'], 0, ',', '.') }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="field"><label>Check In</label><input type="date" name="check_in" required></div>
+                            <div class="field"><label>Check Out</label><input type="date" name="check_out" required></div>
+                        </div>
+                        <div class="row">
+                            <div class="field"><label>Nama Tamu</label><input type="text" name="customer_name" required></div>
+                        </div>
+                        <div class="row">
+                            <div class="field"><label>Email</label><input type="email" name="customer_email" required></div>
+                            <div class="field"><label>No. HP</label><input type="tel" name="customer_phone" required></div>
+                        </div>
+                        <div class="row">
+                            <div class="field">
+                                <label>Nomor Kamar</label>
+                                <select name="room_number" required style="height:42px;">
+                                    <option value="">Pilih tipe kamar dulu</option>
+                                </select>
+                            </div>
+                            <div class="field"><label>Catatan</label><input type="text" name="special_request"></div>
+                        </div>
+                    </div>
+                    <div class="dialog-f">
+                        <button type="button" class="btn btn-ghost" data-close>Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Reservasi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Edit / Assign Nomor Kamar -->
+        <div class="modal" id="editModal">
+            <div class="dialog slim">
+                <div class="dialog-h">Edit Nomor Kamar</div>
+                <form id="editForm">
+                    @csrf
+                    <div class="dialog-b">
                         <div class="field">
-                            <label>Kamar</label>
-                            <select name="room_booking_id" required>
-                                <option value="">Pilih Kamar</option>
-                                @foreach($availableRooms as $room)
-                                    <option value="{{ $room['id'] }}" data-price="{{ $room['price'] }}">
-                                        {{ $room['name'] }} - Rp {{ number_format($room['price'], 0, ',', '.') }}
-                                    </option>
-                                @endforeach
+                            <label>Nomor Kamar</label>
+                            <select name="room_number" required style="height:42px;">
+                                <option value="">Memuat kamar tersedia...</option>
                             </select>
+                            <small style="color:#64748b;margin-top:4px;display:block">
+                                Kamar tersedia untuk: <strong id="editRoomType">-</strong>
+                            </small>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="field">
-                            <label>Check In</label>
-                            <input type="date" name="check_in" required />
-                        </div>
-                        <div class="field">
-                            <label>Check Out</label>
-                            <input type="date" name="check_out" required />
-                        </div>
+                    <div class="dialog-f">
+                        <button type="button" class="btn btn-ghost" data-close>Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                     </div>
-
-                    <div class="row">
-                        <div class="field">
-                            <label>Nama Lengkap*</label>
-                            <input type="text" name="customer_name" placeholder="Nama tamu" required />
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="field">
-                            <label>Email*</label>
-                            <input type="email" name="customer_email" placeholder="email@contoh.com" required />
-                        </div>
-                        <div class="field">
-                            <label>No. HP*</label>
-                            <input type="tel" name="customer_phone" placeholder="08xxxx" required />
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="field">
-                            <label>Nomor Kamar*</label>
-                            <input type="text" name="room_number" placeholder="cth: 221" required />
-                        </div>
-                        <div class="field">
-                            <label>Catatan (opsional)</label>
-                            <input type="text" name="special_request" placeholder="do not disturb" />
-                        </div>
-                    </div>
-                </div>
-                <div class="dialog-f">
-                    <button type="button" class="btn btn-ghost" data-close>Batal</button>
-                    <button type="submit" class="btn btn-primary">Tambah Reservasi</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-
-    <div class="modal" id="editModal" aria-hidden="true">
-        <div class="dialog slim">
-            <div class="dialog-h">Edit Nomor Kamar Tamu</div>
-            <form id="editForm">
-                @csrf
-                <div class="dialog-b">
-                    <div class="field">
-                        <label>Nomor Kamar</label>
-                        <input type="text" name="room_number" placeholder="Masukkan nomor kamar" required />
-                    </div>
-                </div>
-                <div class="dialog-f">
-                    <button type="button" class="btn btn-ghost" data-close>Batal</button>
-                    <button type="submit" class="btn btn-primary">Edit</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script>
-    const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      let editingId = null;
 
-    if (!CSRF_TOKEN) {
-        console.error('CSRF token not found!');
-    }
+      // === MODAL HELPER ===
+      const openModal = (modal) => {
+          modal?.classList.add('open');
+          document.documentElement.style.overflow = 'hidden';
+      };
+      const closeModal = (modal) => {
+          modal?.classList.remove('open');
+          document.documentElement.style.overflow = '';
+      };
 
-    let editingId = null;
+      // Klik backdrop = tutup modal
+      document.querySelectorAll('.modal').forEach(m => {
+          m.addEventListener('click', e => e.target === m && closeModal(m));
+      });
+      document.querySelectorAll('[data-close]').forEach(btn => {
+          btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
+      });
 
-    // ========== MODAL FUNCTIONS ==========
-    const openModal = (modal) => {
-        if (modal) {
-            modal.classList.add('open');
-            document.documentElement.style.overflow = 'hidden';
-        }
-    };
+      const addModal  = document.getElementById('addModal');
+      const editModal = document.getElementById('editModal');
 
-    const closeModal = (modal) => {
-        if (modal) {
-            modal.classList.remove('open');
-            document.documentElement.style.overflow = '';
-        }
-    };
+      // === BUKA MODAL TAMBAH ===
+      document.getElementById('btnOpenAdd')?.addEventListener('click', () => {
+          const today = new Date().toISOString().split('T')[0];
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Event listeners untuk modal backdrop
-    const addModal = document.getElementById('addModal');
-    const editModal = document.getElementById('editModal');
+          document.querySelector('#addForm [name="check_in"]').value = today;
+          document.querySelector('#addForm [name="check_out"]').value = tomorrow.toISOString().split('T')[0];
+          openModal(addModal);
+      });
 
-    if (addModal) {
-        addModal.addEventListener('click', (e) => {
-            if (e.target === addModal) closeModal(addModal);
-        });
-    }
+      // === LOAD NOMOR KAMAR DI MODAL TAMBAH ===
+      document.querySelector('#addForm select[name="room_booking_id"]')?.addEventListener('change', async function () {
+          const id = this.value;
+          const selectNum = document.querySelector('#addForm select[name="room_number"]');
 
-    if (editModal) {
-        editModal.addEventListener('click', (e) => {
-            if (e.target === editModal) closeModal(editModal);
-        });
-    }
+          if (!id) {
+              selectNum.innerHTML = '<option value="">Pilih tipe kamar dulu</option>';
+              return;
+          }
 
-    // Close buttons
-    document.querySelectorAll('[data-close]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const modal = btn.closest('.modal');
-            if (modal) closeModal(modal);
-        });
-    });
+          const res = await fetch(`/admin/checkin/${id}/available-numbers`);
+          const data = await res.json();
 
-    // ========== OPEN ADD MODAL ==========
-    const btnOpenAdd = document.getElementById('btnOpenAdd');
-    if (btnOpenAdd) {
-        btnOpenAdd.addEventListener('click', (e) => {
-            e.preventDefault();
-            const form = document.getElementById('addForm');
-            if (form) {
-                const today = new Date().toISOString().split('T')[0];
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                const checkInInput = form.querySelector('[name="check_in"]');
-                const checkOutInput = form.querySelector('[name="check_out"]');
-                
-                if (checkInInput) checkInInput.value = today;
-                if (checkOutInput) checkOutInput.value = tomorrow.toISOString().split('T')[0];
-                
-                openModal(addModal);
-            }
-        });
-    }
+          selectNum.innerHTML = '<option value="">Pilih Nomor Kamar</option>';
+          data.available_numbers?.forEach(n => {
+              const opt = document.createElement('option');
+              opt.value = n;
+              opt.textContent = n;
+              selectNum.appendChild(opt);
+          });
+      });
 
-    // ========== ROOM SELECTION - GET AVAILABLE NUMBERS ==========
-    const roomSelect = document.querySelector('select[name="room_booking_id"]');
-    const roomNumberInput = document.querySelector('input[name="room_number"]');
+      // === AKSI TOMBOL DI TABEL (INI YANG DIPERBAIKI TOTAL) ===
+      document.querySelector('#tbl tbody')?.addEventListener('click', async function (e) {
+          // Cari button yang diklik (bukan svg atau path)
+          const button = e.target.closest('button[data-edit], button[data-checkin], button[data-delete]');
+          if (!button) return;
 
-    if (roomSelect && roomNumberInput) {
-        roomSelect.addEventListener('change', async function() {
-            const roomId = this.value;
-            console.log('Room selected:', roomId);
-            
-            if (!roomId) {
-                roomNumberInput.placeholder = 'Pilih kamar terlebih dahulu';
-                roomNumberInput.disabled = true;
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/admin/checkin/${roomId}/available-numbers`);
-                const result = await response.json();
-                console.log('Available numbers:', result);
-                
-                if (result.available_numbers && result.available_numbers.length > 0) {
-                    roomNumberInput.placeholder = `Tersedia: ${result.available_numbers.join(', ')}`;
-                    roomNumberInput.disabled = false;
-                    
-                    // Create datalist
-                    let datalistId = 'room-numbers-list';
-                    let existingDatalist = document.getElementById(datalistId);
-                    if (existingDatalist) {
-                        existingDatalist.remove();
-                    }
-                    
-                    const datalist = document.createElement('datalist');
-                    datalist.id = datalistId;
-                    result.available_numbers.forEach(num => {
-                        const option = document.createElement('option');
-                        option.value = num;
-                        datalist.appendChild(option);
-                    });
-                    
-                    roomNumberInput.setAttribute('list', datalistId);
-                    document.body.appendChild(datalist);
-                } else {
-                    roomNumberInput.placeholder = 'Semua kamar sudah terpakai';
-                    roomNumberInput.disabled = true;
-                }
-            } catch (error) {
-                console.error('Error loading room numbers:', error);
-                roomNumberInput.placeholder = 'Error memuat nomor kamar';
-            }
-        });
-    }
+          e.stopPropagation(); // Penting biar ga kena event lain
 
-    // ========== SUBMIT ADD RESERVATION FORM ==========
-    const addForm = document.getElementById('addForm');
-    if (addForm) {
-        addForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('=== ADD FORM SUBMITTED ===');
-            
-            const formData = new FormData(addForm);
-            const roomSelect = addForm.querySelector('select[name="room_booking_id"]');
-            const selectedOption = roomSelect?.options[roomSelect.selectedIndex];
-            const roomPrice = selectedOption ? parseFloat(selectedOption.getAttribute('data-price')) : 0;
-            
-            const checkIn = new Date(formData.get('check_in'));
-            const checkOut = new Date(formData.get('check_out'));
-            const duration = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-            const totalPrice = roomPrice * duration;
-            
-            const data = {
-                room_booking_id: formData.get('room_booking_id'),
-                customer_name: formData.get('customer_name'),
-                customer_email: formData.get('customer_email'),
-                customer_phone: formData.get('customer_phone'),
-                check_in: formData.get('check_in'),
-                check_out: formData.get('check_out'),
-                room_number: formData.get('room_number'),
-                special_request: formData.get('special_request') || null,
-                capacity: '2 orang',
-                room_price: roomPrice,
-                total_price: totalPrice,
-                duration: duration
-            };
-            
-            console.log('Data to send:', data);
-            
-            try {
-                const response = await fetch('/admin/checkin', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': CSRF_TOKEN,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+          const tr = button.closest('tr');
+          const reservationId = tr.dataset.id;
+          const roomBookingId = tr.dataset.roomBookingId;
 
-                console.log('Response status:', response.status);
-                const result = await response.json();
-                console.log('Response result:', result);
-                
-                if (result.success) {
-                    alert('✓ Reservasi berhasil dibuat!');
-                    closeModal(addModal);
-                    window.location.reload();
-                } else {
-                    alert('✗ ' + (result.message || 'Gagal membuat reservasi'));
-                }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Terjadi kesalahan: ' + error.message);
-            }
-        });
-    }
+          // 1. EDIT / ASSIGN KAMAR
+          if (button.hasAttribute('data-edit')) {
+              editingId = reservationId;
 
-    // ========== TABLE ACTIONS - FIXED ==========
-    const tableBody = document.getElementById('tbl');
-    if (tableBody) {
-        tableBody.addEventListener('click', async (e) => {
-            const tr = e.target.closest('tr[data-id]');
-            if (!tr) return;
-            
-            const reservationId = tr.dataset.id;
-            console.log('Action clicked for reservation:', reservationId);
+              const roomTypeName = tr.cells[2].firstChild.textContent.trim();
+              document.getElementById('editRoomType').textContent = roomTypeName;
 
-            // EDIT ROOM NUMBER
-            if (e.target.closest('[data-edit]')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('=== EDIT CLICKED ===');
-                editingId = reservationId;
-                
-                const roomNoDiv = tr.querySelector('td:nth-child(3) div');
-                const currentRoomNo = roomNoDiv ? roomNoDiv.textContent.replace('No: ', '').trim() : '';
-                
-                console.log('Current room number:', currentRoomNo);
-                
-                const editForm = document.getElementById('editForm');
-                const editInput = editForm?.querySelector('[name="room_number"]');
-                if (editInput) {
-                    editInput.value = currentRoomNo;
-                    console.log('Edit input value set to:', editInput.value);
-                }
-                
-                if (editModal) {
-                    openModal(editModal);
-                    console.log('Edit modal opened');
-                }
-                return;
-            }
+              const select = document.querySelector('#editForm select[name="room_number"]');
+              select.innerHTML = '<option value="">Memuat...</option>';
+              select.disabled = true;
 
-            // CHECK IN
-            if (e.target.closest('[data-checkin]')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (confirm('Lakukan check-in untuk reservasi ini?\n\nTamu akan pindah ke halaman Tamu Menginap.')) {
-                    await checkinReservation(reservationId);
-                }
-                return;
-            }
+              try {
+                  const res = await fetch(`/admin/checkin/${roomBookingId}/available-numbers`);
+                  const data = await res.json();
 
-            // DELETE
-            if (e.target.closest('[data-delete]')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (confirm('Hapus reservasi ini?\n\nData akan dihapus permanen.')) {
-                    await deleteReservation(reservationId);
-                }
-                return;
-            }
-        });
-    }
+                  select.innerHTML = '<option value="">Pilih Nomor Kamar</option>';
+                  const currentRoom = tr.cells[2].querySelector('div')?.textContent.replace('Kamar:', '').trim() || '';
 
-    // ========== SUBMIT EDIT FORM - FIXED ==========
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('=== EDIT FORM SUBMITTED ===');
-            console.log('Editing reservation ID:', editingId);
-            
-            if (!editingId) {
-                alert('Error: Reservation ID tidak ditemukan');
-                return;
-            }
-            
-            const formData = new FormData(editForm);
-            const newRoomNumber = formData.get('room_number');
-            console.log('New room number:', newRoomNumber);
-            
-            if (!newRoomNumber || newRoomNumber.trim() === '') {
-                alert('Nomor kamar tidak boleh kosong!');
-                return;
-            }
-            
-            try {
-                // ENCODE reservation ID untuk handle karakter # dan spesial lainnya
-                const encodedId = encodeURIComponent(editingId);
-                console.log('Encoded ID:', encodedId);
-                
-                const response = await fetch(`/admin/checkin/${encodedId}/room-number`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': CSRF_TOKEN,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        room_number: newRoomNumber.trim()
-                    })
-                });
+                  data.available_numbers?.forEach(num => {
+                      const opt = document.createElement('option');
+                      opt.value = num;
+                      opt.textContent = num;
+                      if (num === currentRoom) opt.selected = true;
+                      select.appendChild(opt);
+                  });
 
-                console.log('Edit response status:', response.status);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    throw new Error('HTTP error! status: ' + response.status);
-                }
-                
-                const result = await response.json();
-                console.log('Edit result:', result);
-                
-                if (result.success) {
-                    alert('✓ Nomor kamar berhasil diupdate!');
-                    closeModal(editModal);
-                    window.location.reload();
-                } else {
-                    alert('✗ ' + (result.message || 'Gagal mengupdate nomor kamar'));
-                }
-            } catch (error) {
-                console.error('Error updating room number:', error);
-                alert('Terjadi kesalahan: ' + error.message);
-            }
-        });
-    }
+                  select.disabled = false;
+              } catch (err) {
+                  select.innerHTML = '<option value="">Gagal memuat kamar</option>';
+              }
 
-    // ========== CHECK IN FUNCTION - FIXED ==========
-    async function checkinReservation(reservationId) {
-        try {
-            console.log('=== CHECK IN ===');
-            console.log('Processing check-in for:', reservationId);
-            
-            // ENCODE reservation ID untuk handle karakter #
-            const encodedId = encodeURIComponent(reservationId);
-            console.log('Encoded ID for check-in:', encodedId);
-            
-            // PERBAIKAN: Gunakan POST method (bukan PATCH)
-            const response = await fetch(`/admin/checkin/${encodedId}/checkin`, {
-                method: 'POST', // UBAH INI dari PATCH ke POST
-                headers: {
-                    'X-CSRF-TOKEN': CSRF_TOKEN,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                // HAPUS body karena tidak diperlukan untuk check-in
-                // body: JSON.stringify({}) // Tidak perlu body kosong
-            });
+              openModal(editModal);
+              return;
+          }
 
-            console.log('Check-in response status:', response.status);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                
-                // Coba parse error message
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    alert('✗ ' + (errorJson.message || 'Gagal melakukan check-in'));
-                } catch {
-                    alert('Error: ' + errorText);
-                }
-                return;
-            }
+          // 2. CHECK-IN
+          if (button.hasAttribute('data-checkin')) {
+              if (!confirm('Check-in tamu ini sekarang?')) return;
 
-            const result = await response.json();
-            console.log('Check-in result:', result);
-            
-            if (result.success) {
-                alert('✓ Tamu berhasil check-in!\n\nData pindah ke halaman Tamu Menginap.');
-                window.location.reload();
-            } else {
-                alert('✗ ' + (result.message || 'Gagal melakukan check-in'));
-            }
-        } catch (error) {
-            console.error('Error during check-in:', error);
-            alert('Terjadi kesalahan saat check-in: ' + error.message);
-        }
-    }
+              try {
+                  const res = await fetch(`/admin/checkin/${encodeURIComponent(reservationId)}/checkin`, {
+                      method: 'POST',
+                      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+                  });
+                  const json = await res.json();
+                  alert(json.success ? 'Check-in berhasil!' : 'Gagal: ' + (json.message || 'Error'));
+                  if (json.success) location.reload();
+              } catch (err) {
+                  alert('Error: ' + err.message);
+              }
+              return;
+          }
 
-    // ========== DELETE FUNCTION - FIXED ==========
-    async function deleteReservation(reservationId) {
-        try {
-            console.log('=== DELETE ===');
-            console.log('Deleting reservation:', reservationId);
-            
-            // ENCODE reservation ID untuk handle karakter #
-            const encodedId = encodeURIComponent(reservationId);
-            console.log('Encoded ID for delete:', encodedId);
-            
-            const response = await fetch(`/admin/checkin/${encodedId}/delete`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': CSRF_TOKEN,
-                    'Accept': 'application/json',
-                }
-            });
+          // 3. HAPUS
+          if (button.hasAttribute('data-delete')) {
+              if (!confirm('Yakin hapus reservasi ini? Data hilang permanen!')) return;
 
-            console.log('Delete response status:', response.status);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    alert('✗ ' + (errorJson.message || 'Gagal menghapus reservasi'));
-                } catch {
-                    alert('Error: ' + errorText);
-                }
-                return;
-            }
+              try {
+                  const res = await fetch(`/admin/checkin/${encodeURIComponent(reservationId)}/delete`, {
+                      method: 'POST',
+                      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+                  });
+                  const json = await res.json();
+                  alert(json.success ? 'Reservasi dihapus!' : 'Gagal: ' + (json.message || 'Error'));
+                  if (json.success) location.reload();
+              } catch (err) {
+                  alert('Error: ' + err.message);
+              }
+          }
+      });
 
-            const result = await response.json();
-            console.log('Delete result:', result);
-            
-            if (result.success) {
-                alert('✓ Reservasi berhasil dihapus!');
-                window.location.reload();
-            } else {
-                alert('✗ ' + (result.message || 'Gagal menghapus reservasi'));
-            }
-        } catch (error) {
-            console.error('Error during delete:', error);
-            alert('Terjadi kesalahan: ' + error.message);
-        }
-    }
+      // === SUBMIT EDIT NOMOR KAMAR ===
+      document.getElementById('editForm')?.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const roomNumber = this.querySelector('select[name="room_number"]').value;
+          if (!roomNumber) return alert('Pilih nomor kamar dulu!');
 
-    // ========== SEARCH ==========
-    const searchInput = document.getElementById('q');
-    if (searchInput) {
-        searchInput.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            
-            if (query.length >= 2 || query.length === 0) {
-                try {
-                    const response = await fetch(`/admin/checkin/search?q=${encodeURIComponent(query)}`);
-                    const reservations = await response.json();
-                    updateTable(reservations);
-                } catch (error) {
-                    console.error('Search error:', error);
-                }
-            }
-        });
-    }
+          try {
+              const res = await fetch(`/admin/checkin/${encodeURIComponent(editingId)}/room-number`, {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRF-TOKEN': CSRF_TOKEN,
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ room_number: roomNumber })
+              });
+              const json = await res.json();
 
-    function updateTable(reservations) {
-        const tbody = document.querySelector('#tbl tbody');
-        if (!tbody) return;
-        
-        if (!reservations || reservations.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">
-                        Tidak ada hasil pencarian
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        tbody.innerHTML = reservations.map(reservation => `
-            <tr data-id="${reservation.reservation_id}">
-                <td class="idcell">${reservation.reservation_id}</td>
-                <td>${reservation.customer_name}</td>
-                <td>
-                    ${reservation.room_booking.room_booking_name}
-                    ${reservation.room_number ? 
-                        `<div style="color:#64748b;font-size:12px;margin-top:4px">No: ${reservation.room_number}</div>` : 
-                        ''}
-                </td>
-                <td>${new Date(reservation.check_in).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                <td>${new Date(reservation.check_out).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                <td>${reservation.duration}</td>
-                <td class="money">Rp ${reservation.total_price.toLocaleString('id-ID')}</td>
-                <td>
-                    <div class="actions">
-                        <button class="icon-btn b-yellow" data-edit title="Edit nomor kamar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                        </button>
-                        <button class="icon-btn b-green" data-checkin title="Check In">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 12h12"/><path d="m15 18 6-6-6-6"/><path d="M3 3v18"/>
-                            </svg>
-                        </button>
-                        <button class="icon-btn b-red" data-delete title="Hapus">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    }
+              alert(json.success ? 'Nomor kamar berhasil diupdate!' : 'Gagal: ' + (json.message || 'Error'));
+              if (json.success) {
+                  closeModal(editModal);
+                  location.reload();
+              }
+          } catch (err) {
+              alert('Error: ' + err.message);
+          }
+      });
 
-    console.log('=== SCRIPT LOADED ===');
-    console.log('CSRF Token:', CSRF_TOKEN);
-    console.log('Add Form:', addForm ? 'Found' : 'Not found');
-    console.log('Edit Form:', editForm ? 'Found' : 'Not found');
-    console.log('Table:', tableBody ? 'Found' : 'Not found');
-    </script>
+      console.log('FIXED 100% — Semua tombol bisa diklik!');
+
+      // === SUBMIT TAMBAH RESERVASI ===
+      document.getElementById('addForm')?.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          
+          const formData = new FormData(this);
+
+          try {
+              const res = await fetch('/admin/checkin', {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRF-TOKEN': CSRF_TOKEN,
+                      // JANGAN PAKE Content-Type: application/json → biar FormData jalan
+                  },
+                  body: formData
+              });
+
+              const json = await res.json();
+
+              if (json.success) {
+                  alert('Sukses! ' + json.message + ' → ' + json.reservation_id);
+                  closeModal(addModal);
+                  location.reload();
+              } else {
+                  alert('Gagal: ' + json.message);
+              }
+          } catch (err) {
+              alert('Error koneksi: ' + err.message);
+          }
+      });
+  </script>

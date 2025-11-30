@@ -485,10 +485,10 @@
         }
 
         .chip-confirmed {
-            background: var(--green-bg);
-            color: var(--green);
-            border: 1px solid var(--green-br);
-        }
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1px solid var(--green-br);
+    }
     </style>
 </head>
 <body>
@@ -538,12 +538,12 @@
                 </a>
             </nav>
 
-            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-                @csrf
-                <button type="submit" class="logout" onclick="return confirm('Yakin ingin logout?')">
-                    Logout
-                </button>
-            </form>
+            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form" style="margin-top: auto;">
+            @csrf
+            <button type="submit" class="logout" onclick="return confirm('Yakin ingin logout?')" style="border: 0; width: 100%;">
+                Logout
+            </button>
+        </form>
         </aside>
 
         <!-- Main -->

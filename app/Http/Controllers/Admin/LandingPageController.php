@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Room;
 use App\Models\RoomImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LandingPageController extends Controller
 {
@@ -31,10 +32,18 @@ class LandingPageController extends Controller
     }
 
     /**
-     * Store room baru
+     * Store room baru - DIPERBAIKI
      */
     public function store(Request $request)
     {
+        // Log request untuk debugging
+        Log::info('Store room request', [
+            'room_name' => $request->room_name,
+            'room_type' => $request->room_type,
+            'has_images' => $request->hasFile('images'),
+            'image_count' => $request->hasFile('images') ? count($request->file('images')) : 0
+        ]);
+
         $validated = $request->validate([
             'room_name' => 'required|string|max:255',
             'room_type' => 'required|string|max:100',
@@ -47,30 +56,65 @@ class LandingPageController extends Controller
         ]);
 
         try {
-            // Create room
+            // ✅ PERBAIKAN: Generate room_id yang unik
+            $roomId = 'room_' . uniqid() . '_' . time();
+            
+            // Create room dengan room_id
             $room = Room::create([
+                'room_id' => $roomId, // ✅ TAMBAHKAN INI
                 'room_name' => $validated['room_name'],
                 'room_type' => $validated['room_type'],
                 'room_price' => $validated['room_price'],
                 'room_capacity' => $validated['room_capacity'] ?? 2,
                 'room_facility' => $validated['room_facility'] ?? null,
                 'room_rules' => $validated['room_rules'] ?? null,
+                'room_amount' => 1, // ✅ TAMBAHKAN INI karena required di migration
+                'room_image' => 'main.jpg' // ✅ TAMBAHKAN INI karena ada default di migration
             ]);
 
-            // Handle multiple images upload
-            foreach ($request->file('images') as $index => $image) {
-                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/rooms'), $filename);
-                
-                $room->images()->create([
-                    'image_path' => $filename,
-                    'sort_order' => $index
-                ]);
+            Log::info('Room created', ['room_id' => $room->room_id]);
+
+            // Handle multiple images upload dengan urutan yang benar
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    
+                    // Pastikan folder ada
+                    $uploadPath = public_path('images/rooms');
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0755, true);
+                    }
+                    
+                    $image->move($uploadPath, $filename);
+                    
+                    $room->images()->create([
+                        'image_path' => $filename,
+                        'sort_order' => $index
+                    ]);
+                    
+                    Log::info('Image uploaded', [
+                        'filename' => $filename,
+                        'sort_order' => $index
+                    ]);
+                }
             }
 
-            return redirect()->route('admin.landing')->with('success', 'Kamar berhasil ditambahkan!');
+            Log::info('Room created successfully', ['room_id' => $room->room_id]);
+
+            // ✅ PERBAIKAN: Return redirect yang proper
+            return redirect()
+                ->route('admin.landing')
+                ->with('success', 'Kamar berhasil ditambahkan!');
+                
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menambahkan kamar: ' . $e->getMessage());
+            Log::error('Failed to create room', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal menambahkan kamar: ' . $e->getMessage());
         }
     }
 
@@ -81,7 +125,7 @@ class LandingPageController extends Controller
     {
         // Cari room berdasarkan room_id (bukan id auto increment)
         $room = Room::where('room_id', $id)->with(['images' => function($query) {
-            $query->orderBy('sort_order'); // PASTIKAN ORDER BY sort_order
+            $query->orderBy('sort_order');
         }])->firstOrFail();
         
         // Format images untuk blade
@@ -126,11 +170,11 @@ class LandingPageController extends Controller
                 'room_rules' => $validated['room_rules'] ?? null,
             ]);
 
-            // ===== UPDATE URUTAN EXISTING IMAGES =====
+            // Update urutan existing images
             if ($request->has('existing_order')) {
                 $existingOrder = json_decode($request->existing_order, true);
                 
-                \Log::info('Updating image order:', ['order' => $existingOrder]);
+                Log::info('Updating image order:', ['order' => $existingOrder]);
                 
                 if (is_array($existingOrder)) {
                     foreach ($existingOrder as $item) {
@@ -138,7 +182,7 @@ class LandingPageController extends Controller
                             ->where('room_id', $room->room_id)
                             ->update(['sort_order' => $item['sort_order']]);
                         
-                        \Log::info('Updated image', [
+                        Log::info('Updated image', [
                             'id' => $item['id'],
                             'new_sort_order' => $item['sort_order'],
                             'rows_affected' => $updated
@@ -147,7 +191,7 @@ class LandingPageController extends Controller
                 }
             }
 
-            // ===== UPLOAD NEW IMAGES =====
+            // Upload new images
             if ($request->hasFile('images')) {
                 $newImages = $request->file('images');
                 $newImagesCount = count($newImages);
@@ -161,7 +205,6 @@ class LandingPageController extends Controller
                     return back()->withErrors(['images' => 'Minimal 3 gambar diperlukan.'])->withInput();
                 }
                 
-                // Cari sort_order tertinggi
                 $maxOrder = $room->images()->max('sort_order') ?? 0;
                 
                 foreach ($newImages as $index => $image) {
@@ -181,13 +224,11 @@ class LandingPageController extends Controller
                 return back()->withErrors(['images' => 'Kamar harus memiliki minimal 3 gambar.'])->withInput();
             }
 
-            // Log final order
-            $finalOrder = $room->images()->orderBy('sort_order')->get(['id', 'sort_order', 'image_path']);
-            \Log::info('Final image order:', $finalOrder->toArray());
+            Log::info('Room updated successfully', ['room_id' => $room->room_id]);
             
             return redirect()->route('admin.landing')->with('success', 'Kamar berhasil diupdate!');
         } catch (\Exception $e) {
-            \Log::error('Update error:', ['message' => $e->getMessage()]);
+            Log::error('Update error:', ['message' => $e->getMessage()]);
             return back()->with('error', 'Gagal mengupdate kamar: ' . $e->getMessage())->withInput();
         }
     }
@@ -198,24 +239,36 @@ class LandingPageController extends Controller
     public function destroy($id)
     {
         try {
-            $room = Room::with('images')->findOrFail($id);
+            // ✅ PERBAIKAN: Cari berdasarkan room_id, bukan auto-increment ID
+            $room = Room::where('room_id', $id)->with('images')->firstOrFail();
+            
+            Log::info('Deleting room', ['room_id' => $id, 'room_name' => $room->room_name]);
             
             // Hapus semua gambar dari storage
             foreach ($room->images as $image) {
                 $imagePath = public_path('images/rooms/' . $image->image_path);
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
+                    Log::info('Deleted image file', ['path' => $imagePath]);
                 }
             }
             
-            // Delete room (akan otomatis delete images jika ada cascade)
+            // Delete room
             $room->delete();
+            
+            Log::info('Room deleted successfully', ['room_id' => $id]);
             
             return response()->json([
                 'success' => true,
                 'message' => 'Kamar berhasil dihapus'
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to delete room', [
+                'room_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -224,12 +277,15 @@ class LandingPageController extends Controller
     }
 
     /**
-     * Remove specific image from room (hapus gambar pertama dari landing page)
+     * Remove specific image from room (hapus gambar dari landing page)
      */
     public function removeImage($id)
     {
         try {
-            $room = Room::with('images')->findOrFail($id);
+            // ✅ PERBAIKAN: Cari berdasarkan room_id
+            $room = Room::where('room_id', $id)->with('images')->firstOrFail();
+            
+            Log::info('Removing image from room', ['room_id' => $id]);
             
             // Hapus gambar pertama
             $firstImage = $room->images->first();
@@ -237,13 +293,13 @@ class LandingPageController extends Controller
             if ($firstImage) {
                 $imagePath = public_path('images/rooms/' . $firstImage->image_path);
                 
-                // Hapus file dari storage
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
+                    Log::info('Deleted image file', ['path' => $imagePath]);
                 }
                 
-                // Hapus record dari database
                 $firstImage->delete();
+                Log::info('Image record deleted', ['image_id' => $firstImage->id]);
             }
             
             return response()->json([
@@ -251,6 +307,11 @@ class LandingPageController extends Controller
                 'message' => 'Foto berhasil dihapus'
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to remove image', [
+                'room_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -266,13 +327,11 @@ class LandingPageController extends Controller
         try {
             $image = RoomImage::findOrFail($imageId);
             
-            // Hapus file dari storage
             $imagePath = public_path('images/rooms/' . $image->image_path);
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
             
-            // Hapus record dari database
             $image->delete();
             
             return response()->json([

@@ -149,4 +149,41 @@ class CheckOutController extends Controller
 
         return response()->json($guests);
     }
+
+    public function availableNumbers(Request $request)
+    {
+        $typeName = $request->get('type');
+
+        if (!$typeName) {
+            return response()->json(['available_numbers' => []]);
+        }
+
+        // Cari tipe kamar berdasarkan nama
+        $roomBooking = \App\Models\RoomBooking::where('room_booking_name', $typeName)->first();
+
+        if (!$roomBooking || !$roomBooking->room_booking_number) {
+            return response()->json(['available_numbers' => []]);
+        }
+
+        // Ambil semua nomor kamar dari kolom room_booking_number (string koma-separated)
+        $allRoomNumbers = array_map('trim', explode(',', $roomBooking->room_booking_number));
+
+        // Ambil nomor yang SUDAH DIPAKAI oleh tamu yang sedang Checked In
+        $usedNumbers = \App\Models\Reservation::where('room_booking_id', $roomBooking->id)
+            ->where('booking_status', 'Checked In')
+            ->whereNotNull('room_number')
+            ->whereIn('room_number', $allRoomNumbers)
+            ->pluck('room_number')
+            ->toArray();
+
+        // Hitung yang tersedia
+        $available = array_diff($allRoomNumbers, $usedNumbers);
+
+        // Urutkan biar rapi
+        sort($available);
+
+        return response()->json([
+            'available_numbers' => array_values($available)
+        ]);
+    }
 }

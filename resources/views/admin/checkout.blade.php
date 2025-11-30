@@ -202,20 +202,28 @@
         justify-content: flex-end;
       }
       .icon-btn {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
         border: 0;
-        border-radius: 8px;
+        border-radius: 12px;
         display: grid;
         place-items: center;
         cursor: pointer;
         color: #fff;
-      }
-      .icon-btn svg {
-        width: 16px;
-        height: 16px;
-        stroke: currentColor;
-      }
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .icon-btn:hover {
+        transform: translateY(-3px) scale(1.08);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .icon-btn:active {
+        transform: translateY(-1px) scale(1.05);
+    }
       .b-yellow {
         background: #f59e0b;
       }
@@ -294,6 +302,36 @@
       .btn-primary {
         background: var(--brand);
         color: #fff;
+      }
+      .dialog-f .btn {
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .dialog-f .btn::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.15);
+          opacity: 0;
+          transition: opacity 0.25s ease;
+          border-radius: 10px;
+      }
+      .dialog-f .btn:hover::before {
+          opacity: 1;
+      }
+
+      .dialog-f .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      }
+      .dialog-f .btn-primary:hover {
+          background: #0a3d25 !important; 
+      }
+      .dialog-f .btn-ghost:hover {
+          background: #e5e7eb !important;
+          border-color: #d1d5db !important;
+          color: #111 !important;
       }
 
       @media (max-width: 900px) {
@@ -420,18 +458,18 @@
                                     <td>
                                         <div class="actions">
                                             <button class="icon-btn b-yellow" data-edit title="Edit nomor kamar">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M12 20h9"/>
                                                     <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                                                 </svg>
                                             </button>
                                             <button class="icon-btn b-red" data-checkout title="Check Out">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M15 12H3"/>
-                                                    <path d="m9 18-6-6 6-6"/>
-                                                    <path d="M21 3v18"/>
-                                                </svg>
-                                            </button>
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 12H3"/>
+                                                <path d="m9 18-6-6 6-6"/>
+                                                <path d="M21 3v18"/>
+                                            </svg>
+                                        </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -460,15 +498,20 @@
     </div>
 
     <!-- Modal: Edit Nomor Kamar -->
-    <div class="modal" id="editModal" aria-hidden="true">
+    <div class="modal" id="editModal">
         <div class="dialog">
-            <div class="dialog-h">Edit Nomor Kamar Tamu</div>
+            <div class="dialog-h">Assign / Edit Nomor Kamar</div>
             <form id="editForm">
                 @csrf
                 <div class="dialog-b">
                     <div class="field">
-                        <label>Nomor Kamar</label>
-                        <input type="text" name="room_number" placeholder="Masukkan nomor kamar" required />
+                        <label>Nomor Kamar Tersedia</label>
+                        <select name="room_number" id="roomNumberSelect" required style="height:42px;padding:0 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;">
+                            <option value="">Memuat kamar tersedia...</option>
+                        </select>
+                        <small style="color:#64748b;margin-top:6px;display:block">
+                            Tipe kamar: <strong id="roomTypeLabel">-</strong>
+                        </small>
                     </div>
                 </div>
                 <div class="dialog-f">
@@ -480,278 +523,153 @@
     </div>
 
     <script>
-    const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    let editingId = null;
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        let editingId = null;
 
-    // Modal functions
-    const openModal = (modal) => {
-        modal.classList.add('open');
-        document.documentElement.style.overflow = 'hidden';
-    };
+        const openModal = m => { m.classList.add('open'); document.documentElement.style.overflow = 'hidden'; };
+        const closeModal = m => { m.classList.remove('open'); document.documentElement.style.overflow = ''; };
 
-    const closeModal = (modal) => {
-        modal.classList.remove('open');
-        document.documentElement.style.overflow = '';
-    };
+        document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => e.target === m && closeModal(m)));
+        document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.closest('.modal'))));
 
-    // Event listeners untuk modal
-    const editModal = document.getElementById('editModal');
-    if (editModal) {
-        editModal.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal(e.currentTarget);
-        });
-    }
+        const editModal = document.getElementById('editModal');
 
-    document.querySelectorAll('[data-close]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            closeModal(btn.closest('.modal'));
-        });
-    });
+        // KLIK TOMBOL DI TABEL — FIX DETEKSI TOMBOL KUNING
+        document.querySelector('#tbl tbody')?.addEventListener('click', async function(e) {
+            // Deteksi tombol kuning (edit) atau merah (checkout)
+            const editBtn = e.target.closest('.b-yellow');
+            const checkoutBtn = e.target.closest('.b-red');
 
-    // ===== TABLE ACTIONS =====
-    const tableBody = document.getElementById('tbl');
-    if (tableBody) {
-        tableBody.addEventListener('click', (e) => {
-            const tr = e.target.closest('tr[data-id]');
-            if (!tr) return;
-            
-            const reservationId = tr.dataset.id;
-            console.log('Action clicked for reservation:', reservationId);
+            if (!editBtn && !checkoutBtn) return;
 
-            // Edit Nomor Kamar
-            if (e.target.closest('[data-edit]')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('=== EDIT CLICKED ===');
-                editingId = reservationId;
-                
-                const roomNoDiv = tr.querySelector('td:nth-child(3) div');
-                const currentRoomNo = roomNoDiv ? roomNoDiv.textContent.replace('No: ', '').trim() : '';
-                
-                console.log('Current room number:', currentRoomNo);
-                
-                const editForm = document.getElementById('editForm');
-                const editInput = editForm?.querySelector('[name="room_number"]');
-                if (editInput) {
-                    editInput.value = currentRoomNo;
-                    console.log('Edit input value set to:', editInput.value);
+            const tr = e.target.closest('tr');
+            const id = tr.dataset.id;
+
+            // === EDIT NOMOR KAMAR (TOMBOL KUNING) ===
+            if (editBtn) {
+                editingId = id;
+
+                // Ambil nama tipe kamar
+                const roomTypeCell = tr.cells[2];
+                const roomTypeName = roomTypeCell.firstChild.textContent.trim();
+                document.getElementById('roomTypeLabel').textContent = roomTypeName;
+
+                const select = document.getElementById('roomNumberSelect');
+                select.innerHTML = '<option value="">Memuat...</option>';
+                select.disabled = true;
+
+                try {
+                    // Route ini harus ada di backend kamu! Sesuaikan kalau beda
+                    const res = await fetch(`/admin/checkout/available-numbers?type=${encodeURIComponent(roomTypeName)}`);
+                    const data = await res.json();
+
+                    select.innerHTML = '<option value="">-- Pilih Nomor Kamar --</option>';
+
+                    // Isi dropdown
+                    data.available_numbers.forEach(num => {
+                        const opt = document.createElement('option');
+                        opt.value = num;
+                        opt.textContent = num;
+
+                        // Auto-select kalau sudah ada nomor kamar
+                        const currentNoDiv = roomTypeCell.querySelector('div');
+                        if (currentNoDiv && currentNoDiv.textContent.includes(num)) {
+                            opt.selected = true;
+                        }
+                        select.appendChild(opt);
+                    });
+
+                    select.disabled = false;
+                } catch (err) {
+                    console.error(err);
+                    select.innerHTML = '<option value="">Gagal memuat kamar</option>';
                 }
-                
-                if (editModal) {
-                    openModal(editModal);
-                    console.log('Edit modal opened');
-                }
+
+                openModal(editModal);
                 return;
             }
 
-            // Check Out
-            if (e.target.closest('[data-checkout]')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (confirm('Lakukan check-out untuk tamu ini?\n\nKamar akan kembali tersedia setelah check-out.')) {
-                    processCheckout(reservationId);
+            // === CHECKOUT (TOMBOL MERAH) ===
+            if (checkoutBtn) {
+                if (confirm('Yakin check-out tamu ini sekarang?')) {
+                    try {
+                        const res = await fetch(`/admin/checkout/${encodeURIComponent(id)}/checkout`, {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+                        });
+                        const json = await res.json();
+                        alert(json.success ? 'Check-out berhasil!' : 'Gagal: ' + (json.message || 'Error'));
+                        if (json.success) location.reload();
+                    } catch {
+                        alert('Koneksi error!');
+                    }
                 }
-                return;
             }
         });
-    }
 
-    // ===== EDIT NOMOR KAMAR =====
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.addEventListener('submit', async (e) => {
+        // SUBMIT DROPDOWN
+        document.getElementById('editForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('=== EDIT FORM SUBMITTED ===');
-            console.log('Editing reservation ID:', editingId);
-            
-            if (!editingId) {
-                alert('Error: Reservation ID tidak ditemukan');
-                return;
-            }
-            
-            const formData = new FormData(editForm);
-            const newRoomNumber = formData.get('room_number');
-            console.log('New room number:', newRoomNumber);
-            
-            if (!newRoomNumber || newRoomNumber.trim() === '') {
-                alert('Nomor kamar tidak boleh kosong!');
-                return;
-            }
-            
+            const roomNo = this.room_number.value;
+            if (!roomNo) return alert('Pilih nomor kamar dulu!');
+
             try {
-                // ENCODE reservation ID untuk handle karakter # dan spesial lainnya
-                const encodedId = encodeURIComponent(editingId);
-                console.log('Encoded ID:', encodedId);
-                
-                const response = await fetch(`/admin/checkout/${encodedId}/room-number`, {
+                const res = await fetch(`/admin/checkout/${encodeURIComponent(editingId)}/room-number`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': CSRF_TOKEN,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        room_number: newRoomNumber.trim()
-                    })
+                    body: JSON.stringify({ room_number: roomNo })
                 });
-
-                console.log('Edit response status:', response.status);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    throw new Error('HTTP error! status: ' + response.status);
-                }
-                
-                const result = await response.json();
-                console.log('Edit result:', result);
-                
-                if (result.success) {
-                    alert('✓ Nomor kamar berhasil diupdate!');
+                const data = await res.json();
+                alert(data.success ? 'Nomor kamar berhasil diupdate!' : 'Gagal: ' + (data.message || 'Error'));
+                if (data.success) {
                     closeModal(editModal);
-                    window.location.reload();
-                } else {
-                    alert('✗ ' + (result.message || 'Gagal mengupdate nomor kamar'));
+                    location.reload();
                 }
-            } catch (error) {
-                console.error('Error updating room number:', error);
-                alert('Terjadi kesalahan: ' + error.message);
+            } catch (err) {
+                alert('Error: ' + err.message);
             }
         });
-    }
 
-    // ===== PROCESS CHECK OUT =====
-    async function processCheckout(reservationId) {
-        try {
-            console.log('=== CHECK OUT ===');
-            console.log('Processing check-out for:', reservationId);
-            
-            // ENCODE reservation ID untuk handle karakter #
-            const encodedId = encodeURIComponent(reservationId);
-            console.log('Encoded ID for check-out:', encodedId);
-            
-            const response = await fetch(`/admin/checkout/${encodedId}/checkout`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': CSRF_TOKEN,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            });
+        // Search tetap jalan
+        document.getElementById('q')?.addEventListener('input', e => {
+            const q = e.target.value.trim();
+            if (q.length === 0 || q.length >= 2) {
+                fetch(`/admin/checkout/search?q=${encodeURIComponent(q)}`)
+                    .then(r => r.json())
+                    .then(data => updateTable(data || []));
+            }
+        });
 
-            console.log('Check-out response status:', response.status);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    alert('✗ ' + (errorJson.message || 'Gagal melakukan check-out'));
-                } catch {
-                    alert('Error: ' + errorText);
-                }
+        function updateTable(guests) {
+            const tbody = document.querySelector('#tbl tbody');
+            if (!tbody) return;
+            if (guests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:60px;color:#64748b;">Tidak ada data</td></tr>';
                 return;
             }
-
-            const result = await response.json();
-            console.log('Check-out result:', result);
-            
-            if (result.success) {
-                alert('✓ Tamu berhasil check-out!\n\nKamar sekarang tersedia untuk reservasi baru.');
-                window.location.reload();
-            } else {
-                alert('✗ ' + (result.message || 'Gagal melakukan check-out'));
-            }
-        } catch (error) {
-            console.error('Error during check-out:', error);
-            alert('Terjadi kesalahan saat check-out: ' + error.message);
-        }
-    }
-
-    // ===== SEARCH =====
-    const searchInput = document.getElementById('q');
-    if (searchInput) {
-        searchInput.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            
-            if (query.length >= 2 || query.length === 0) {
-                try {
-                    const response = await fetch(`/admin/checkout/search?q=${encodeURIComponent(query)}`);
-                    const guests = await response.json();
-                    updateTable(guests);
-                } catch (error) {
-                    console.error('Search error:', error);
-                }
-            }
-        });
-    }
-
-    function updateTable(guests) {
-        const tbody = document.querySelector('#tbl tbody');
-        if (!tbody) return;
-        
-        if (!guests || guests.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <circle cx="11" cy="11" r="8"/>
-                                <path d="m21 21-4.3-4.3"/>
-                            </svg>
-                            <div>
-                                <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Tidak ada hasil pencarian</div>
-                                <div style="font-size: 14px; color: #94a3b8;">Coba kata kunci lain</div>
-                            </div>
+            tbody.innerHTML = guests.map(g => `
+                <tr data-id="${g.reservation_id}">
+                    <td class="idcell">${g.reservation_id}</td>
+                    <td>${g.customer_name}</td>
+                    <td>${g.room_booking.room_booking_name}${g.room_number ? '<div style="color:#64748b;font-size:12px;margin-top:4px">No: '+g.room_number+'</div>' : ''}</td>
+                    <td>${new Date(g.check_in).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}</td>
+                    <td>${new Date(g.check_out).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}</td>
+                    <td>${g.duration}</td>
+                    <td class="money">Rp ${Number(g.total_price).toLocaleString('id-ID')}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="icon-btn b-yellow" title="Edit nomor kamar">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            </button>
+                            <button class="icon-btn b-red" title="Check Out">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 12H3"/><path d="m9 18-6-6 6-6"/><path d="M21 3v18"/></svg>
+                            </button>
                         </div>
                     </td>
                 </tr>
-            `;
-            return;
+            `).join('');
         }
-
-        tbody.innerHTML = guests.map(guest => `
-            <tr data-id="${guest.reservation_id}">
-                <td class="idcell">${guest.reservation_id}</td>
-                <td>${guest.customer_name}</td>
-                <td>
-                    ${guest.room_booking.room_booking_name}
-                    ${guest.room_number ? 
-                        `<div style="color:#64748b;font-size:12px;margin-top:4px">No: ${guest.room_number}</div>` : 
-                        ''}
-                </td>
-                <td>${new Date(guest.check_in).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                <td>${new Date(guest.check_out).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                <td>${guest.duration}</td>
-                <td class="money">Rp ${guest.total_price.toLocaleString('id-ID')}</td>
-                <td>
-                    <div class="actions">
-                        <button class="icon-btn b-yellow" data-edit title="Edit nomor kamar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 20h9"/>
-                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-                            </svg>
-                        </button>
-                        <button class="icon-btn b-red" data-checkout title="Check Out">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M15 12H3"/>
-                                <path d="m9 18-6-6 6-6"/>
-                                <path d="M21 3v18"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    console.log('=== CHECKOUT SCRIPT LOADED ===');
-    console.log('CSRF Token:', CSRF_TOKEN);
-    console.log('Edit Form:', editForm ? 'Found' : 'Not found');
-    console.log('Table:', tableBody ? 'Found' : 'Not found');
-</script>
+    </script>

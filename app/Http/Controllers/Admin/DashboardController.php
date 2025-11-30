@@ -6,11 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\RoomBooking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        
+        // OTOMATIS BERSIHIN PENDING > 24 JAM — CUMA JALAN SEKALI PER JAM!
+        if (!Cache::has('pending_cleanup_last_run') || 
+            now()->diffInMinutes(Cache::get('pending_cleanup_last_run')) > 60) {
+            
+            Artisan::call('reservations:cleanup-expired');
+            Cache::put('pending_cleanup_last_run', now(), now()->addHours(3));
+        }
+
         // Hitung total semua nomor kamar dari semua tipe kamar
         $totalRooms = RoomBooking::all()->sum(function($room) {
             return count(explode(',', $room->room_booking_number));
@@ -32,7 +43,7 @@ class DashboardController extends Controller
         // Reservasi terbaru (10 terbaru untuk slider)
         $latestReservations = Reservation::with('roomBooking')
             ->orderBy('created_at', 'desc')
-            ->limit(10) // Tambah limit untuk slider
+            ->limit(10)
             ->get()
             ->map(function($reservation) {
                 return [
@@ -44,11 +55,10 @@ class DashboardController extends Controller
                     'check_in' => $reservation->check_in,
                     'special_request' => $reservation->special_request,
                     'booking_status' => $reservation->booking_status,
-                    'is_editable' => $reservation->booking_status === 'Pending' // Hanya pending yang bisa diedit
+                    'is_editable' => $reservation->booking_status === 'Pending'
                 ];
             });
 
-        // Hitung tamu yang sedang menginap (status Checked In)
         $currentGuests = Reservation::where('booking_status', 'Checked In')->count();
         
         // Status kamar dengan DUAL STATUS (otomatis + manual)
@@ -105,7 +115,7 @@ class DashboardController extends Controller
             // PERBAIKAN: Gunakan reservation_id bukan primary key
             $reservation = Reservation::where('reservation_id', $reservationId)->firstOrFail();
             
-            // Validasi: hanya reservasi dengan status Pending yang bisa diubah
+            // ✅ PERBAIKAN: HANYA reservasi dengan status Pending yang bisa diubah
             if ($reservation->booking_status !== 'Pending') {
                 return response()->json([
                     'success' => false,

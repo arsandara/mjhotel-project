@@ -105,67 +105,76 @@
 
       /* ========= Hero ========= */
       .hero {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-soft);
-        flex-wrap: nowrap;
-        padding: 0;
-        height: 450px;
-        overflow: hidden;
+          display: flex; 
+          align-items: stretch;
+          background: var(--bg-soft);
+          min-height: 600px;        /* hero fleksibel */
+          overflow: hidden;
       }
+
       .hero-image {
-        flex: 0 0 50%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+          flex: 1;
+          height: 100%;
       }
+
       .hero-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;        /* gambar selalu penuh */
+          object-position: center; 
+          display: block;           /* hilangkan gap bawah */
       }
+
       .hero-content {
-        flex: 1;
-        padding: 40px 80px 40px 60px;
-        min-width: 300px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        text-align: left;
+          flex: 1; 
+          padding: 20px 0; 
+          display: flex; 
+          flex-direction: column; 
+          justify-content: center; 
+          align-items: flex-start; 
+          max-width: 600px;
       }
+
       .hero-content h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #000;
-        margin-bottom: 14px;
-        line-height: 1.2;
+          font-size: 2.8rem; 
+          font-weight: 700; 
+          color: #000; 
+          margin-bottom: 16px; 
+          line-height: 1.1;
       }
+
       .hero-content h1 span {
-        color: var(--brand);
+          color: var(--brand);
       }
+
       .hero-content p {
-        color: #333;
-        margin-bottom: 24px;
-        line-height: 1.6;
-        font-size: 1rem;
+          color: #333; 
+          margin-bottom: 28px; 
+          line-height: 1.6; 
+          font-size: 1.05rem;
+          max-width: 500px;
       }
+
       .btn {
-        display: inline-block;
-        background: var(--brand);
-        color: #fff;
-        padding: 12px 28px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: background 0.25s, transform 0.2s;
+          display: inline-block; 
+          background: var(--brand); 
+          color: #fff; 
+          padding: 14px 32px;
+          text-decoration: none; 
+          font-weight: 700; 
+          border-radius: var(--radius);
+          transition: transform 0.2s ease, background 0.25s ease;
+          font-size: 1rem;
       }
-      .btn:hover {
-        background: var(--brand-dark);
-        transform: translateY(-1px);
+
+      .btn:hover { 
+          background: var(--brand-dark); 
+          transform: translateY(-2px); 
+      }
+
+      .btn:focus-visible { 
+          outline: 3px solid #fff; 
+          outline-offset: 2px; 
       }
 
       /* ========= Room Gallery ========= */
@@ -507,40 +516,44 @@
         }
 
         /* Hero Mobile */
-        .hero {
-          height: auto;
-          flex-wrap: nowrap;
-          align-items: center;
-          padding: 0;
+        .hero { 
+          height: auto; 
+          min-height: 360px; 
+          flex-direction: row; 
+          flex-wrap: nowrap; 
+          align-items: center; 
+          justify-content: center; 
+          gap: clamp(12px, 2vw, 24px); 
         }
-        .hero-image {
-          flex: 0 0 55%;
-          height: auto;
+        .hero-image { 
+            flex: 0 0 55%; 
         }
-        .hero-image img {
-          max-width: 55vw;
-          height: auto;
-          object-fit: cover;
-          border-radius: var(--radius);
+        .hero-image img { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            min-height: 360px; 
+            object-fit: cover; 
+            object-position: center; 
         }
-        .hero-content {
-          flex: 1;
-          min-width: 0;
-          width: 45%;
-          padding: 16px;
+        .hero-content { 
+            flex: 0 0 45%; 
+            padding: 20px 16px; 
+            text-align: left; 
+            align-items: flex-start; 
         }
-        .hero-content h1 {
-          font-size: clamp(22px, 7vw, 32px);
-          line-height: 1.15;
+        .hero-content h1 { 
+            font-size: clamp(22px, 7vw, 32px); 
+            line-height: 1.15; 
+            margin-bottom: 12px; 
         }
-        .hero-content p {
-          font-size: clamp(12px, 3.5vw, 14px);
+        .hero-content p { 
+            font-size: clamp(12px, 3.5vw, 14px); 
+            margin-bottom: 18px; 
         }
-        .btn {
-          padding: 10px 16px;
-          font-size: clamp(12px, 3.6vw, 14px);
-          border-radius: 10px;
-        }
+        .btn { 
+            padding: 10px 16px; 
+            font-size: clamp(12px, 3.6vw, 14px); 
 
         /* Room Gallery Mobile */
         .room-container {
@@ -599,16 +612,25 @@
           border-radius: 10px;
         }
       }
-
+      }
       @media (max-width: 480px) {
-        .hero-content h1 {
-          font-size: 1.8rem;
+        .hero { 
+            min-height: 350px; 
         }
-        .hero-content p {
-          font-size: 0.9rem;
+        .hero-content { 
+            padding: 30px 15px; 
         }
-        .footer-columns {
-          grid-template-columns: 1fr;
+        .hero-content h1 { 
+            font-size: 1.8rem; 
+            margin-bottom: 12px; 
+        }
+        .hero-content p { 
+            font-size: 0.95rem; 
+            margin-bottom: 24px; 
+        }
+        .btn { 
+            padding: 12px 24px; 
+            font-size: 0.95rem; 
         }
       }
     </style>

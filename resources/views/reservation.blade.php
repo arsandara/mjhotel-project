@@ -92,33 +92,35 @@
             display: flex; 
             align-items: stretch;
             background: var(--bg-soft);
-            height: 500px;
+            min-height: 600px;        /* hero fleksibel */
             overflow: hidden;
         }
 
         .hero-image {
-            flex: 0 0 55%;
-            position: relative;
+            flex: 1;
+            height: 100%;
         }
 
         .hero-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center 25%;
+            object-fit: cover;        /* gambar selalu penuh */
+            object-position: center; 
+            display: block;           /* hilangkan gap bawah */
         }
 
         .hero-content {
-            flex: 0 0 45%;
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
+            flex: 1; 
+            padding: 20px 0; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: flex-start; 
+            max-width: 600px;
         }
 
         .hero-content h1 {
-            font-size: 3rem; 
+            font-size: 2.8rem; 
             font-weight: 700; 
             color: #000; 
             margin-bottom: 16px; 
@@ -131,9 +133,9 @@
 
         .hero-content p {
             color: #333; 
-            margin-bottom: 32px; 
+            margin-bottom: 28px; 
             line-height: 1.6; 
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             max-width: 500px;
         }
 
@@ -143,15 +145,20 @@
             color: #fff; 
             padding: 14px 32px;
             text-decoration: none; 
-            font-weight: 600; 
+            font-weight: 700; 
             border-radius: var(--radius);
-            transition: background 0.25s ease, transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.25s ease;
             font-size: 1rem;
         }
 
         .btn:hover { 
             background: var(--brand-dark); 
             transform: translateY(-2px); 
+        }
+
+        .btn:focus-visible { 
+            outline: 3px solid #fff; 
+            outline-offset: 2px; 
         }
 
         /* =========================
@@ -311,7 +318,7 @@
         }
 
         /* =========================
-        ROOMS SECTION
+        ROOMS SECTION (NEW LAYOUT)
         ========================= */
         .rooms-section { 
             padding: 0 5% 60px;
@@ -328,12 +335,11 @@
 
         .room-card {
             background: #fff; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 12px; 
+            border: none;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
         }
 
         .room-card:hover { 
@@ -342,7 +348,8 @@
         }
 
         .room-image {
-            flex: 0 0 300px;
+            width: 100%;
+            height: 260px;
         }
 
         .room-image img { 
@@ -353,23 +360,25 @@
         }
 
         .room-content {
-            flex: 1;
-            padding: 24px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            background: #fff;
         }
 
         .room-info {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .room-info h3 { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
+            font-size: 22px; 
+            font-weight: 800; 
             color: #111827; 
-            margin: 0 0 12px; 
+            margin: 0;
         }
 
         .meta { 
@@ -377,27 +386,29 @@
             align-items: center; 
             gap: 8px; 
             font-size: 14px; 
-            color: #6b7280; 
-            margin-bottom: 16px; 
+            color: #475569; 
+            margin: 0;
         }
 
         .icon-people { 
-            width: 18px; 
-            height: 18px; 
-            flex: 0 0 18px;
+            width: 22px; 
+            height: 22px; 
+            display: inline-block;
+            flex: 0 0 22px;
             stroke: #065238;
         }
 
         .room-price { 
-            font-size: 1.5rem; 
+            font-size: 22px; 
             font-weight: 800; 
-            color: var(--brand); 
+            color: var(--brand);
+            margin: 0;
         }
 
         .room-price .per-night { 
-            margin-left: 4px; 
+            margin-left: 6px; 
             font-size: 14px; 
-            color: #9ca3af; 
+            color: #6b7280; 
             font-weight: 500; 
         }
 
@@ -405,8 +416,8 @@
             background: var(--brand);
             color: #fff;
             border: 0;
-            padding: 12px 24px;
-            font-weight: 600;
+            padding: 12px 18px;
+            font-weight: 700;
             cursor: pointer;
             border-radius: var(--radius);
             transition: all 0.2s ease;
@@ -476,6 +487,41 @@
         }
 
         /* =========================
+        EMPTY STATE
+        ========================= */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 40px auto;
+        }
+
+        .empty-state img {
+            max-width: 250px;
+            margin-bottom: 32px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+
+        /* =========================
         RESPONSIVE DESIGN
         ========================= */
         @media (max-width: 1200px) {
@@ -536,15 +582,7 @@
         }
 
         @media (max-width: 768px) {
-            .room-card {
-                flex-direction: column;
-            }
-            
-            .room-image {
-                flex: 0 0 200px;
-                width: 100%;
-            }
-            
+            /* Room Card Mobile */
             .room-content {
                 flex-direction: column;
                 align-items: flex-start;
@@ -555,6 +593,7 @@
                 width: 100%;
             }
             
+            /* Search Mobile */
             .search-wrap {
                 grid-template-columns: 1fr;
             }
@@ -626,39 +665,44 @@
             }
 
             /* Hero Mobile */
-            .hero {
-                height: auto;
-                min-height: 400px;
-                flex-direction: column;
+            .hero { 
+                height: auto; 
+                min-height: 360px; 
+                flex-direction: row; 
+                flex-wrap: nowrap; 
+                align-items: center; 
+                justify-content: center; 
+                gap: clamp(12px, 2vw, 24px); 
             }
-            
-            .hero-image {
-                flex: 0 0 45%;
-                width: 100%;
+            .hero-image { 
+                flex: 0 0 55%; 
             }
-            
-            .hero-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+            .hero-image img { 
+                display: block; 
+                width: 100%; 
+                height: 100%; 
+                min-height: 360px; 
+                object-fit: cover; 
+                object-position: center; 
             }
-            
-            .hero-content {
-                flex: 1;
-                width: 100%;
-                padding: 40px 20px;
-                text-align: center;
-                align-items: center;
+            .hero-content { 
+                flex: 0 0 45%; 
+                padding: 20px 16px; 
+                text-align: left; 
+                align-items: flex-start; 
             }
-            
-            .hero-content h1 {
-                font-size: 2rem;
-                text-align: center;
+            .hero-content h1 { 
+                font-size: clamp(22px, 7vw, 32px); 
+                line-height: 1.15; 
+                margin-bottom: 12px; 
             }
-            
-            .hero-content p {
-                text-align: center;
-                font-size: 1rem;
+            .hero-content p { 
+                font-size: clamp(12px, 3.5vw, 14px); 
+                margin-bottom: 18px; 
+            }
+            .btn { 
+                padding: 10px 16px; 
+                font-size: clamp(12px, 3.6vw, 14px); 
             }
 
             .footer{ 
@@ -689,15 +733,28 @@
             .footer-logo{ 
                 width:180px; 
             }
+            .empty-state {
+                padding: 60px 20px;
+                margin: 30px auto;
+            }
+            
+            .empty-state img {
+                max-width: 200px;
+                margin-bottom: 24px;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.5rem;
+            }
+            
+            .empty-state p {
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
             .hero {
                 min-height: 350px;
-            }
-            
-            .hero-image {
-                flex: 0 0 40%;
             }
             
             .hero-content {
@@ -710,13 +767,13 @@
             }
             
             .hero-content p {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 margin-bottom: 24px;
             }
             
             .btn {
                 padding: 12px 24px;
-                font-size: 0.9rem;
+                font-size: 0.95rem;
             }
 
             .search-section {
@@ -753,12 +810,37 @@
                 gap: 20px;
             }
 
+            .room-image {
+                height: 200px;
+            }
+
             .room-info h3 {
-                font-size: 1.25rem;
+                font-size: 20px;
             }
 
             .room-price {
-                font-size: 1.25rem;
+                font-size: 20px;
+            }
+
+            .btn-primary {
+                padding: 11px 16px;
+            }
+            .empty-state {
+                padding: 40px 16px;
+                margin: 20px auto;
+            }
+            
+            .empty-state img {
+                max-width: 160px;
+                margin-bottom: 20px;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.3rem;
+            }
+            
+            .empty-state p {
+                font-size: 0.9rem;
             }
         }
 
@@ -910,29 +992,12 @@
         // Base URL untuk API
         const BASE_URL = '{{ url("/") }}';
 
-        // Fungsi untuk format harga
+        // ========== FUNGSI UTAMA ==========
         function formatPrice(price) {
             return 'Rp ' + new Intl.NumberFormat('id-ID').format(price);
         }
 
-        // Fungsi untuk memuat data kamar dari API
-        async function loadRooms() {
-            try {
-                const response = await fetch(`${BASE_URL}/api/available-rooms`);
-                const data = await response.json();
-                
-                window.allRooms = sortRoomsByCategoryAndPrice(data.rooms);
-                renderRooms(window.allRooms);
-                updateRoomCount(window.allRooms.length);
-            } catch (error) {
-                console.error('Error loading rooms:', error);
-                document.getElementById('roomsList').innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">Error memuat data kamar. Silakan refresh halaman.</p>';
-            }
-        }
-
-        // Fungsi untuk mengurutkan kamar berdasarkan kategori dan harga
         function sortRoomsByCategoryAndPrice(rooms) {
-            // Definisikan urutan kategori
             const categoryOrder = {
                 'Suite Room': 1,
                 'Deluxe Room': 2, 
@@ -941,17 +1006,45 @@
             };
             
             return rooms.sort((a, b) => {
-                // Urutkan berdasarkan kategori dulu
                 const categoryA = categoryOrder[a.room_booking_type] || 5;
                 const categoryB = categoryOrder[b.room_booking_type] || 5;
                 
                 if (categoryA !== categoryB) {
-                    return categoryA - categoryB; // Suite dulu, lalu Deluxe, dll.
+                    return categoryA - categoryB;
                 }
                 
-                // Jika kategori sama, urutkan berdasarkan harga (tertinggi dulu)
                 return b.room_booking_price - a.room_booking_price;
             });
+        }
+
+        async function loadRooms() {
+            try {
+                console.log('Loading rooms from:', `${BASE_URL}/api/available-rooms`);
+                
+                const response = await fetch(`${BASE_URL}/api/available-rooms`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Rooms data received:', data);
+                
+                window.allRooms = sortRoomsByCategoryAndPrice(data.rooms || []);
+                renderRooms(window.allRooms);
+                updateRoomCount(window.allRooms.length);
+                
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+                
+                // Fallback ke dummy data
+                const fallbackRooms = getFallbackRooms();
+                window.allRooms = sortRoomsByCategoryAndPrice(fallbackRooms);
+                renderRooms(window.allRooms);
+                updateRoomCount(window.allRooms.length);
+                
+                showTemporaryMessage('Menggunakan data contoh', 'info');
+            }
         }
 
         // Fungsi untuk render kamar
@@ -959,7 +1052,13 @@
             const roomsContainer = document.getElementById('roomsList');
             
             if (rooms.length === 0) {
-                roomsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">Tidak ada kamar tersedia untuk filter yang dipilih.</p>';
+                roomsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <img src="/images/emptystate.png" alt="Kamar Tidak Tersedia" />
+                        <h3>Wah, kamar kami sedang penuh!</h3>
+                        <p>Silakan cek tanggal lain atau filter kategori yang berbeda untuk melihat ketersediaan kamar.</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -1000,12 +1099,16 @@
             attachBookingHandlers();
         }
 
-        // Fungsi untuk update jumlah kamar
         function updateRoomCount(count) {
-            document.getElementById('resultCount').textContent = `${count} kamar tersedia`;
+            const resultCount = document.getElementById('resultCount');
+            if (count === 0) {
+                resultCount.textContent = 'Tidak ada kamar tersedia';
+            } else {
+                resultCount.textContent = `${count} kamar tersedia`;
+            }
         }
 
-        // Fungsi untuk attach event handlers
+        // Di file reservation.blade.php - bagian attachBookingHandlers
         function attachBookingHandlers() {
             document.querySelectorAll('.book-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -1018,24 +1121,51 @@
                     const personsSel = document.getElementById('persons');
                     const persons = personsSel ? personsSel.value : '2';
                     
+                    // ✅ VALIDASI TANGGAL
+                    if (!checkin || !checkout) {
+                        alert('Silakan pilih tanggal check-in dan check-out terlebih dahulu');
+                        return;
+                    }
+                    
+                    const checkinDate = new Date(checkin);
+                    const checkoutDate = new Date(checkout);
+                    
+                    if (checkoutDate <= checkinDate) {
+                        alert('Tanggal check-out harus setelah tanggal check-in');
+                        return;
+                    }
+                    
                     const roomName = roomCard.querySelector('h3')?.textContent?.trim() || 'Kamar';
                     const priceText = roomCard.querySelector('.room-price')?.textContent || '0';
-                    const price = (priceText.match(/\d+/g) || ['0']).join('');
+                    const price = parseInt(priceText.replace(/\D/g, '')) || 0;
                     
-                    const payload = {
-                        room_id: roomId,
-                        room: roomName,
-                        price: price,
-                        checkin: checkin,
-                        checkout: checkout,
-                        persons: persons,
-                    };
-                    
-                    sessionStorage.setItem('bookingPayload', JSON.stringify(payload));
-                    const params = new URLSearchParams(payload);
-                    window.location.href = `${BASE_URL}/review?${params.toString()}`;
+                    // ✅ PERBAIKAN: Gunakan variabel `price` yang sudah didefinisikan
+                    window.location.href = `{{ route('booking.review') }}?room_id=${roomId}&room=${encodeURIComponent(roomName)}&price=${price}&checkin=${checkin}&checkout=${checkout}&persons=${persons}`;
                 });
             });
+        }
+        function showTemporaryMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                z-index: 10000;
+                max-width: 400px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                background: ${type === 'warning' ? '#f59e0b' : '#3b82f6'};
+            `;
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 4000);
         }
 
         // Filter functionality
@@ -1054,10 +1184,8 @@
             let filteredRooms;
             
             if (activeFilter === "all") {
-                // Untuk filter "all", gunakan urutan yang sudah di-sort
                 filteredRooms = window.allRooms;
             } else {
-                // Untuk filter kategori spesifik, urutkan dari harga tertinggi
                 filteredRooms = window.allRooms
                     .filter(room => room.room_booking_type === activeFilter)
                     .sort((a, b) => b.room_booking_price - a.room_booking_price);
@@ -1066,11 +1194,12 @@
             renderRooms(filteredRooms);
             updateRoomCount(filteredRooms.length);
             
-            // Smooth scroll ke hasil
-            document.getElementById('roomsList').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
+            if (filteredRooms.length > 0) {
+                document.getElementById('roomsList').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         }
 
         // Date validation
@@ -1128,7 +1257,6 @@
             setupFilters();
             loadRooms();
 
-            // Event listener untuk form search
             document.getElementById('reservasi').addEventListener('submit', function(e) {
                 e.preventDefault();
                 loadRooms();

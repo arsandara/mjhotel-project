@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\RoomController;
 use App\Http\Controllers\Public\RoomBookingController;
 use App\Http\Controllers\Public\ReservationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CheckInController;
@@ -28,12 +29,23 @@ Route::get('/rooms/{id}', [RoomController::class, 'show'])->name('rooms.show');
 Route::get('/reservation', [RoomBookingController::class, 'index'])->name('reservation');
 Route::get('/api/available-rooms', [RoomBookingController::class, 'getAvailableRooms']);
 Route::get('/api/room/{id}', [RoomBookingController::class, 'getRoomDetail']);
-Route::get('/review', [ReservationController::class, 'create'])->name('booking.create');
-Route::post('/booking', [ReservationController::class, 'store'])->name('booking.store');
+Route::get('/booking/review', [ReservationController::class, 'review'])->name('booking.review');
+Route::post('/booking/store', [ReservationController::class, 'store'])->name('booking.store');
 
-// Payment
+// Payment & Midtrans Routes
 Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
-Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
+Route::get('/payment/finish', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
+Route::get('/payment/error', [PaymentController::class, 'paymentError'])->name('payment.error');
+Route::get('/payment/pending', [PaymentController::class, 'paymentPending'])->name('payment.pending');
+Route::get('/payment/status/{reservationId}', [PaymentController::class, 'checkStatus'])->name('payment.status');
+
+// Midtrans Webhook (UNTUK TRIGGER STATUS OTOMATIS)
+Route::post('/midtrans/notification', [MidtransController::class, 'handleNotification']);
+
+// Untuk testing manual
+Route::post('/midtrans/test', [MidtransController::class, 'testWebhook']);
+
+// Thank You & Pending Pages
 Route::get('/reservation/thank-you', [ReservationController::class, 'thankYou'])->name('reservation.thank-you');
 Route::get('/reservation/pending', [ReservationController::class, 'pending'])->name('reservation.pending');
 
@@ -53,6 +65,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/reservations/{reservation}/status', [DashboardController::class, 'updateReservationStatus'])->name('reservations.update-status');
     Route::post('/rooms/availability', [DashboardController::class, 'updateRoomAvailability'])->name('rooms.update-availability');
+
     
     // Check In (Reservasi)
     Route::get('/checkin', [CheckInController::class, 'index'])->name('checkin');
@@ -69,6 +82,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/checkout/{reservationId}/room-number', [CheckOutController::class, 'updateRoomNumber'])->name('checkout.update-room');
     Route::post('/checkout/{reservationId}/delete', [CheckOutController::class, 'destroy'])->name('checkout.destroy');
     Route::get('/checkout/search', [CheckOutController::class, 'search'])->name('checkout.search');
+    Route::get('checkout/available-numbers', [CheckOutController::class, 'availableNumbers'])
+    ->name('admin.checkout.available-numbers');
     
     // Landing Page Management (Room CRUD) - FIXED
     Route::get('/landing', [LandingPageController::class, 'index'])->name('landing');
@@ -84,4 +99,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
 });

@@ -348,22 +348,6 @@
     </header>
 
     <main class="wrap">
-        @php
-            if (!isset($checkinDate)) {
-                $checkinDate = \Carbon\Carbon::parse($checkin ?? now());
-            }
-            if (!isset($checkoutDate)) {
-                $checkoutDate = \Carbon\Carbon::parse($checkout ?? now()->addDays(1));
-            }
-            if (!isset($duration)) {
-                $duration = $checkoutDate->diffInDays($checkinDate);
-                if ($duration < 1) $duration = 1;
-            }
-            if (!isset($totalPrice)) {
-                $totalPrice = ($price ?? 0) * $duration;
-            }
-        @endphp
-
         <!-- Summary Cards - DATA DARI DATABASE -->
         <section class="summary">
             <div class="sum-box">
@@ -498,7 +482,7 @@
         </section>
     </main>
 
-    <!-- Script Midtrans - DIPERBAIKI: URL yang benar -->
+    <!-- Script Midtrans -->
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 
     <script>
@@ -597,8 +581,8 @@
 
         // ========== BOOKING + PAYMENT FLOW ==========
         document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('btnSubmit');  // DIPERBAIKI: Deklarasi btn di sini
-            let processing = false;  // DIPERBAIKI: Deklarasi processing di sini
+            const btn = document.getElementById('btnSubmit');
+            let processing = false;
 
             btn.addEventListener('click', async function (e) {
                 e.preventDefault();
@@ -612,7 +596,7 @@
                     return;
                 }
 
-                // DIPERBAIKI: Cek window.snap sebelum lanjut
+                // Cek window.snap sebelum lanjut
                 if (!window.snap || typeof window.snap.pay !== 'function') {
                     alert('Midtrans Snap gagal dimuat. Refresh halaman.');
                     return;
@@ -650,7 +634,12 @@
                     const reservationId = bookingJson.reservation_id;
                     const totalPrice = bookingJson.total_price || {{ $totalPrice ?? 0 }};
 
-                    // 2) Request Midtrans snap token
+                    // ✅ PERBAIKAN: Ambil data customer dari form
+                    const customerName = document.getElementById('fullName').value.trim();
+                    const customerEmail = document.getElementById('email').value.trim();
+                    const customerPhone = document.getElementById('phone').value.trim();
+
+                    // 2) Request Midtrans snap token - ✅ KIRIM SEMUA DATA
                     const payResp = await fetch("{{ route('payment.create') }}", {
                         method: 'POST',
                         headers: {
@@ -660,7 +649,11 @@
                         },
                         body: JSON.stringify({
                             reservation_id: reservationId,
-                            total_price: totalPrice
+                            total_price: totalPrice,
+                            // ✅ TAMBAH INI:
+                            customer_name: customerName,
+                            customer_email: customerEmail,
+                            customer_phone: customerPhone
                         })
                     });
                     

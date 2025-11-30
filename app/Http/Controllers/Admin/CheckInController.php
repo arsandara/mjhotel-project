@@ -52,93 +52,80 @@ class CheckInController extends Controller
     public function store(Request $request)
     {
         try {
-            // Log untuk debug
-            \Log::info('Store request data:', $request->all());
-            
             $validated = $request->validate([
-                'room_booking_id' => 'required|exists:room_booking,room_booking_id',
-                'customer_name' => 'required|string|max:100',
-                'customer_email' => 'required|email|max:100',
-                'customer_phone' => 'required|string|max:20',
-                'check_in' => 'required|date',
-                'check_out' => 'required|date|after:check_in',
-                'room_number' => 'required|string|max:10',
-                'special_request' => 'nullable|string',
-                'capacity' => 'nullable|string|max:50',
-                'room_price' => 'required|numeric',
-                'total_price' => 'required|numeric',
-                'duration' => 'required|integer',
+                'room_booking_id'   => 'required|exists:room_booking,room_booking_id',
+                'customer_name'     => 'required|string|max:100',
+                'customer_email'    => 'required|email|max:100',
+                'customer_phone'    => 'required|string|max:20',
+                'check_in'          => 'required|date',
+                'check_out'         => 'required|date|after:check_in',
+                'room_number'       => 'required|string|max:10',
+                'special_request'   => 'nullable|string',
             ]);
 
-            \Log::info('Validation passed:', $validated);
+            // AMBIL DATA KAMAR
+            $room = RoomBooking::findOrFail($validated['room_booking_id']);
+            $pricePerNight = $room->room_booking_price;
 
-            // Cek apakah nomor kamar sudah dipakai
-            $existingReservation = Reservation::where('room_number', $validated['room_number'])
+            // HITUNG DURASI & TOTAL
+            $checkIn  = Carbon::parse($validated['check_in']);
+            $checkOut = Carbon::parse($validated['check_out']);
+            $duration = $checkIn->diffInDays($checkOut);
+            if ($duration < 1) $duration = 1;
+            $totalPrice = $pricePerNight * $duration;
+
+            // CEK NOMOR KAMAR SUDAH DIPAKAI
+            $exists = Reservation::where('room_number', $validated['room_number'])
                 ->where('room_booking_id', $validated['room_booking_id'])
                 ->whereIn('booking_status', ['Confirmed', 'Checked In'])
-                ->first();
+                ->exists();
 
-            if ($existingReservation) {
+            if ($exists) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nomor kamar ' . $validated['room_number'] . ' sudah dipakai'
+                    'message' => 'Nomor kamar ' . $validated['room_number'] . ' sudah dipakai!'
                 ], 422);
             }
 
-            // Generate reservation ID
-            $latestReservation = Reservation::orderBy('created_at', 'desc')->first();
-            $nextNumber = $latestReservation ? 
-                (int)str_replace('#', '', $latestReservation->reservation_id) + 1 
-                : 1;
-            $reservationId = '#' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            // GENERATE ID
+            $reservationId = Reservation::generateReservationId();
 
-            // Buat reservasi dengan status Confirmed
-            $reservation = Reservation::create([
-                'reservation_id' => $reservationId,
-                'room_booking_id' => $validated['room_booking_id'],
-                'customer_name' => $validated['customer_name'],
-                'customer_email' => $validated['customer_email'],
-                'customer_phone' => $validated['customer_phone'],
-                'check_in' => $validated['check_in'],
-                'check_out' => $validated['check_out'],
-                'duration' => $validated['duration'],
-                'room_number' => $validated['room_number'],
-                'special_request' => $validated['special_request'] ?? null,
-                'capacity' => $validated['capacity'] ?? '2 orang',
-                'room_price' => $validated['room_price'],
-                'total_price' => $validated['total_price'],
-                'booking_status' => 'Confirmed',
+            Reservation::create([
+                'reservation_id'   => $reservationId,
+                'room_booking_id'  => $validated['room_booking_id'],
+                'customer_name'    => $validated['customer_name'],
+                'customer_email'   => $validated['customer_email'],
+                'customer_phone'   => $validated['customer_phone'],
+                'check_in'         => $validated['check_in'],
+                'check_out'        => $validated['check_out'],
+                'duration'         => $duration,
+                'room_number'      => $validated['room_number'],
+                'special_request'  => $validated['special_request'],
+                'capacity'         => '2 orang',
+                'room_price'       => $pricePerNight,
+                'total_price'      => $totalPrice,
+                'booking_status'   => 'Confirmed',
+                'payment_status'   => 'paid',
+                'paid_at'          => now(),
             ]);
-
-            \Log::info('Reservation created:', ['id' => $reservationId]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Reservasi berhasil dibuat',
+                'message' => 'Reservasi manual berhasil dibuat!',
                 'reservation_id' => $reservationId
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation failed:', [
-                'errors' => $e->errors(),
-                'request_data' => $request->all()
-            ]);
-            
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal: ' . implode(', ', array_map(fn($err) => implode(', ', $err), $e->errors()))
+                'message' => 'Data tidak lengkap: ' . implode(', ', $e->errors()->all())
             ], 422);
-            
         } catch (\Exception $e) {
-            \Log::error('Store reservation error:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
+            \Log::error('Manual Reservation Error: ' . $e->getMessage(), $request->all());
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal membuat reservasi: ' . $e->getMessage()
-            ], 422);
+                'message' => 'Gagal: ' . $e->getMessage()
+            ], 500);
         }
     }
 

@@ -466,16 +466,16 @@
                   <textarea name="room_facility" placeholder="WiFi gratis, TV kabel, AC, kamar mandi dalam, air panas, dll.">{{ old('room_facility') }}</textarea>
                 </div>
 
-                <!-- Peraturan CheCK Out / Keluar -->
+                <!-- Peraturan Check Out / Keluar -->
                 <div class="field">
-                  <label>Peraturan CheCK Out / Keluar</label>
-                  <textarea name="room_rules" placeholder="Check-in: 14.00 WIB&#10;Check-out: 12.00 WIB&#10;Late check-out dikenakan biaya tambahan&#10;Tidak boleh membawa hewan peliharaan&#10;Dilarang merokok di dalam kamar" rows="8"><?php
-                    echo old('room_rules', $room->room_rules);
-                  ?></textarea>
+                  <label>Peraturan Check Out / Keluar</label>
+                  <textarea name="room_rules" placeholder="Check-in: 14.00 WIB&#10;Check-out: 12.00 WIB&#10;Late check-out dikenakan biaya tambahan&#10;Tidak boleh membawa hewan peliharaan&#10;Dilarang merokok di dalam kamar" rows="8">{{ old('room_rules') }}</textarea>
                 </div>
 
                 <!-- Tambah Foto Baru -->
                 <div id="uploadSectionContainer"></div>
+              </div> <!-- Tutup div.form -->
+            </div> <!-- Tutup div.card-b -->
 
             <div class="actions">
               <button type="button" class="btn btn-ghost" onclick="window.location.href='{{ route('admin.landing') }}'">
@@ -491,7 +491,7 @@
     <script>
       const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       const MAX_PHOTOS = 5;
-      const MIN_PHOTOS = 3; // DIUBAH: dari 4 menjadi 3
+      const MIN_PHOTOS = 3;
       const MAX_FILE_SIZE = 2 * 1024 * 1024;
       let selectedFiles = [];
       let draggedItem = null;

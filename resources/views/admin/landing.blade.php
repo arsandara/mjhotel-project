@@ -510,8 +510,8 @@
               <div class="price">Rp. {{ number_format($room->room_price, 0, ',', '.') }}/malam</div>
               <div class="btns">
                 <a href="{{ route('admin.rooms.edit', $room->room_id) }}" class="btn btn-edit" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Edit</a>
-                <button class="btn btn-del" onclick="deleteRoom({{ $room->room_id }})">Delete</button>
-              </div>
+                <button class="btn btn-del" data-room-id="{{ $room->room_id }}">Delete</button>
+            </div>
             </div>
           </div>
           @endforeach
@@ -527,76 +527,198 @@
     <script>
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-      // Logout Handler
-      function handleLogout() {
+    // Logout Handler
+    function handleLogout() {
         if (confirm('Yakin ingin logout?')) {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = "{{ route('admin.logout') }}";
-          const csrfInput = document.createElement('input');
-          csrfInput.type = 'hidden';
-          csrfInput.name = '_token';
-          csrfInput.value = csrfToken;
-          form.appendChild(csrfInput);
-          document.body.appendChild(form);
-          form.submit();
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ route('admin.logout') }}";
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+            document.body.appendChild(form);
+            form.submit();
         }
-      }
+    }
 
-      // Delete Room
-      function deleteRoom(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus kamar ini?')) {
-          fetch(`/admin/rooms/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              alert('Kamar berhasil dihapus!');
-              location.reload();
-            } else {
-              alert('Gagal menghapus kamar: ' + (data.message || 'Unknown error'));
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus kamar');
-          });
+    // Delete Room - DIPERBAIKI
+    function deleteRoom(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus kamar ini?\n\nTindakan ini tidak dapat dibatalkan!')) {
+            // Tampilkan loading state
+            const deleteBtn = event.target;
+            const originalText = deleteBtn.textContent;
+            deleteBtn.textContent = 'Menghapus...';
+            deleteBtn.disabled = true;
+            
+            fetch(`/admin/rooms/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Tampilkan success message
+                    showNotification('Kamar berhasil dihapus!', 'success');
+                    
+                    // Hapus card dari DOM setelah delay
+                    setTimeout(() => {
+                        const card = deleteBtn.closest('.card');
+                        if (card) {
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                card.remove();
+                                // Jika tidak ada card lagi, reload page
+                                if (document.querySelectorAll('.card').length === 0) {
+                                    location.reload();
+                                }
+                            }, 300);
+                        } else {
+                            location.reload();
+                        }
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Gagal menghapus kamar: ' + error.message, 'error');
+                // Reset button state
+                deleteBtn.textContent = originalText;
+                deleteBtn.disabled = false;
+            });
         }
-      }
+    }
 
-      // Remove Image
-      function removeImage(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus foto kamar ini?')) {
-          fetch(`/admin/rooms/${id}/remove-image`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              const img = document.querySelector(`[data-room-id="${id}"]`);
-              if (img) {
-                img.src = '/images/rooms/default-room.jpg';
-              }
-              alert('Foto berhasil dihapus!');
-            } else {
-              alert('Gagal menghapus foto: ' + (data.message || 'Unknown error'));
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus foto');
-          });
+    // Remove Image dengan improvement
+    function removeImage(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus foto utama kamar ini?')) {
+            const removeBtn = event.target;
+            const originalText = removeBtn.textContent;
+            removeBtn.textContent = 'Menghapus...';
+            removeBtn.disabled = true;
+            
+            fetch(`/admin/rooms/${id}/remove-image`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const img = document.querySelector(`img[data-room-id="${id}"]`);
+                    if (img) {
+                        img.src = '/images/rooms/default-room.jpg';
+                    }
+                    showNotification('Foto berhasil dihapus!', 'success');
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Gagal menghapus foto: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                removeBtn.textContent = originalText;
+                removeBtn.disabled = false;
+            });
         }
-      }
+    }
+
+    // Event delegation untuk delete buttons (SOLUSI ALTERNATIF)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Untuk button delete room
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-del')) {
+                e.preventDefault();
+                const roomId = e.target.getAttribute('data-room-id');
+                deleteRoom(roomId);
+            }
+        });
+    });
+
+    // Notification function untuk tampilan yang lebih baik
+    function showNotification(message, type) {
+        // Hapus notifikasi sebelumnya
+        const existing = document.querySelector('.custom-notification');
+        if (existing) existing.remove();
+        
+        const notification = document.createElement('div');
+        notification.className = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            background: ${type === 'success' ? '#10b981' : '#ef4444'};
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 3000);
+    }
+
+    // Tambahkan CSS animation untuk notifikasi
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
     </script>
   </body>
 </html>

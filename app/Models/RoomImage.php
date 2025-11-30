@@ -10,12 +10,11 @@ class RoomImage extends Model
     use HasFactory;
 
     protected $fillable = [
-        'room_id', 
-        'image_path', 
+        'room_id',
+        'image_path',
         'sort_order'
     ];
 
-    // Relationship ke Room
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id', 'room_id');
