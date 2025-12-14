@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL; // <- TAMBAHKAN INI!
 use App\Models\Reservation;
-use App\Observers\ReservationObserver; 
+use App\Observers\ReservationObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (app()->environment('production')) {
-        URL::forceScheme('https');
+            URL::forceScheme('https'); // Sekarang URL akan dikenali
         }
 
         Reservation::observe(ReservationObserver::class);
