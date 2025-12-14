@@ -43,7 +43,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 storage bootstrap/cache
 
 # 10. Run composer scripts SETELAH copy semua file
-RUN composer run-script post-autoload-dump
+RUN composer dump-autoload --optimize --no-dev
 
 EXPOSE 8080
 CMD ["apache2-foreground"]
