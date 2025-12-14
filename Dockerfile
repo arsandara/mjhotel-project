@@ -20,18 +20,19 @@ RUN a2ensite 000-default.conf
 # 5. Set working directory
 WORKDIR /var/www/html
 
-# 6. Copy HANYA composer.json (TIDAK include composer.lock)
+# 6. Copy HANYA composer.json
 COPY composer.json ./
 
-# 7. Install dependencies (generate lock otomatis jika tidak ada)
+# 7. Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
 
 # 8. Copy seluruh aplikasi
 COPY . .
 
-# 9. Set permissions
+# 9. Set permissions (DENGAN CHECK FOLDER EXIST)
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 storage bootstrap/cache
+    && if [ -d "storage" ]; then chmod -R 755 storage; fi \
+    && if [ -d "bootstrap/cache" ]; then chmod -R 755 bootstrap/cache; fi
 
 EXPOSE 8080
 CMD ["apache2-foreground"]
