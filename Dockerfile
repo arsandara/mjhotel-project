@@ -1,21 +1,34 @@
-FROM richarvey/nginx-php-fpm:latest
+FROM php:8.2-apache
 
-# Copy semua file project
-COPY . /var/www/html
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && a2enmod rewrite
 
-# Image config (penting buat Render)
-ENV SKIP_COMPOSER=1
-ENV WEBROOT=/var/www/html/public
-ENV PHP_ERRORS_STDERR=1
-ENV RUN_SCRIPTS=1
-ENV REAL_IP_HEADER=1
+# Copy Apache config
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Laravel config
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV LOG_CHANNEL=stderr
+# Set working directory
+WORKDIR /var/www/html
 
-# Allow composer run as root
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Copy application
+COPY . .
 
-CMD ["/start.sh"]
+# Install Composer (jika perlu)
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 storage bootstrap/cache
+
+EXPOSE 80
+CMD ["apache2-foreground"]
