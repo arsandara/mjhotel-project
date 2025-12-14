@@ -23,16 +23,20 @@ WORKDIR /var/www/html
 # 6. Copy HANYA composer.json
 COPY composer.json ./
 
-# 7. Install dependencies
+# 7. Install dependencies (generate lock otomatis jika tidak ada)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
 
 # 8. Copy seluruh aplikasi
 COPY . .
 
-# 9. Set permissions (DENGAN CHECK FOLDER EXIST)
-RUN chown -R www-data:www-data /var/www/html \
-    && if [ -d "storage" ]; then chmod -R 755 storage; fi \
-    && if [ -d "bootstrap/cache" ]; then chmod -R 755 bootstrap/cache; fi
+# ===== PERBAIKAN UTAMA DI SINI =====
+# 9. BUAT FOLDER YANG DIBUTUHKAN DAN ATUR PERMISSION
+RUN mkdir -p bootstrap/cache storage/framework/sessions storage/framework/views storage/framework/cache
+RUN chown -R www-data:www-data /var/www/html && chmod -R 775 storage bootstrap/cache
+
+# 10. JALANKAN PACKAGE DISCOVERY SAAT BUILD (KUNCI UTAMA!)
+RUN php artisan package:discover --no-interaction
+# ===================================
 
 EXPOSE 8080
 CMD ["apache2-foreground"]
