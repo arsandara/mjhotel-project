@@ -3,15 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Facility;
 
 class FacilitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        Schema::disableForeignKeyConstraints();
+        
+        Facility::truncate();
+        
+        Schema::enableForeignKeyConstraints();
+
         $facilities = [
             [
                 'facility_id' => 'facility_1',

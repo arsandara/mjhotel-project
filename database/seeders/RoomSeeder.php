@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Room;
 use App\Models\RoomImage;
 
@@ -11,15 +12,12 @@ class RoomSeeder extends Seeder
 {
     public function run(): void
     {
-        // Disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::disableForeignKeyConstraints();
         
-        // Hapus data existing
         RoomImage::truncate();
         Room::truncate();
         
-        // Enable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Schema::enableForeignKeyConstraints();
 
         $rooms = [
             [

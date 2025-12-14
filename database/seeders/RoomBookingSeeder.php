@@ -3,20 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\RoomBooking;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use App\Models\RoomBooking;
 
 class RoomBookingSeeder extends Seeder
 {
     public function run(): void
     {
-        // NONAKTIFKAN FOREIGN KEY CHECKS
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::disableForeignKeyConstraints();
         
         RoomBooking::truncate();
         
-        // AKTIFKAN KEMBALI
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Schema::enableForeignKeyConstraints();
 
         $roomBookings = [
             [

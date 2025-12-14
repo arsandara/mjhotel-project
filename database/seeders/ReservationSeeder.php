@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Reservation;
 use Illuminate\Support\Carbon;
 
@@ -10,10 +11,12 @@ class ReservationSeeder extends Seeder
 {
     public function run(): void
     {
-        // Hapus data lama
+        Schema::disableForeignKeyConstraints();
+        
         Reservation::truncate();
 
-        // PAKAI GENERATE ID BARU — OTOMATIS JADI RSV20250000001
+        Schema::enableForeignKeyConstraints();
+
         $reservationId = Reservation::generateReservationId();
 
         Reservation::create([
