@@ -1,8 +1,7 @@
 .git/
 node_modules/
-vendor/
-storage/logs/
 .env
 Dockerfile
 .dockerignore
 README.md
+*.log

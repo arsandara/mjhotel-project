@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Install dependencies & PHP extensions
+# 1. Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,32 +10,40 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Enable Apache mod_rewrite
+# 2. Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 3. Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# 3. Konfigurasi Apache untuk port 8080
+# 4. Konfigurasi Apache untuk port 8080
 RUN echo "Listen 8080" > /etc/apache2/ports.conf
-
-# Buat virtual host untuk port 8080
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
-
-# Aktifkan site (otomatis nonaktifkan yang lama)
 RUN a2ensite 000-default.conf
 
-# 4. Set working directory
+# 5. Set working directory
 WORKDIR /var/www/html
 
-# 5. Copy aplikasi
+# 6. Copy HANYA file composer dulu (optimasi cache layer)
+COPY composer.json composer.lock ./
+
+# 7. Install dependencies (tambah memory limit untuk hindari error)
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    --prefer-dist --no-scripts
+
+# 8. Copy seluruh aplikasi
 COPY . .
 
-# 6. Set permissions (sesuaikan dengan Laravel)
+# 9. Set permissions (sesuaikan dengan Laravel)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 storage bootstrap/cache
 
-# 7. Expose port 8080
-EXPOSE 8080
+# 10. Run composer scripts SETELAH copy semua file
+RUN composer run-script post-autoload-dump
 
-# 8. Start Apache
+EXPOSE 8080
 CMD ["apache2-foreground"]
