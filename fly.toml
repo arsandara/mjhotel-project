@@ -29,8 +29,8 @@ console_command = 'php /var/www/html/artisan tinker'
   processes = ['app']
 
 [deploy]
-  release_command = "php artisan migrate --force --seed"
-
+  release_command = "php artisan migrate --force"
+  
 [[vm]]
   memory = '1gb'
   cpus = 1
