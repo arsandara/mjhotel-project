@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Reservation;
 use Midtrans\Snap;
 
-
 class PaymentController extends Controller
 {
     public function create(Request $request)
@@ -47,16 +46,7 @@ class PaymentController extends Controller
         try {
             $snapToken = Snap::getSnapToken($params);
 
-            $reservation = Reservation::where('reservation_id', $validated['reservation_id'])->first();
-
-            if (!$reservation) {
-                Log::warning('Reservation not found in payment create', ['reservation_id' => $validated['reservation_id']]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Reservasi tidak ditemukan. Silakan ulangi pemesanan.'
-                ], 404);
-            }
-
+            $reservation = Reservation::where('reservation_id', $validated['reservation_id'])->firstOrFail();
             $reservation->update([
                 'order_id'       => $orderId,
                 'payment_status' => 'pending'
@@ -77,13 +67,10 @@ class PaymentController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Payment create error: ' . $e->getMessage(), [
-                'reservation_id' => $validated['reservation_id'],
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Midtrans error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()
+                'message' => 'Payment gateway error: ' . $e->getMessage()
             ], 500);
         }
     }
