@@ -28,7 +28,12 @@ WORKDIR /var/www/html
 COPY . .
 
 # ===== 7. BUAT FOLDER CACHE LARAVEL DAN SET PERMISSION DULU =====
-RUN mkdir -p bootstrap/cache storage/framework/{sessions,views,cache} && \
+RUN mkdir -p bootstrap/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    storage/framework/cache/data \
+    storage/logs && \
     chown -R www-data:www-data . && \
     chmod -R 775 storage bootstrap/cache
 
@@ -50,9 +55,5 @@ RUN mkdir -p storage/framework/views && \
     chmod -R 775 storage/framework/views
 
 EXPOSE 8080
-
-RUN mkdir -p storage/framework/views && \
-    chown -R www-data:www-data storage/framework && \
-    chmod -R 775 storage/framework
     
 CMD ["apache2-foreground"]
