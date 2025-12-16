@@ -257,7 +257,6 @@ class RoomSeeder extends Seeder
                 'deluxe-double-1-3.jpg',
             ],
             'Deluxe Double Bed (Lantai 2)' => [
-                'deluxe-double-2.jpg',
                 'deluxe-double-2-2.jpg',
                 'deluxe-double-2-3.jpg',
                 'deluxe-double-2-4.jpg',
