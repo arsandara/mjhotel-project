@@ -50,4 +50,5 @@ RUN mkdir -p storage/framework/views && \
     chmod -R 775 storage/framework/views
 
 EXPOSE 8080
+    
 CMD ["apache2-foreground"]
