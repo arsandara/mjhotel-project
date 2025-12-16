@@ -7,6 +7,7 @@ use App\Models\RoomBooking;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -80,73 +81,104 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi
-        $validated = $request->validate([
-            'full_name'   => 'required|min:3',
-            'email'       => 'required|email',
-            'phone'       => 'required|min:10',
-            'dob_day'     => 'required|digits:2',
-            'dob_month'   => 'required|digits:2', 
-            'dob_year'    => 'required|digits:4',
-            'room_name'   => 'required',
-            'price'       => 'required|numeric',
-            'checkin'     => 'required|date',
-            'checkout'    => 'required|date',
-            'persons'     => 'required|numeric'
-        ]);
+        Log::info('=== BOOKING STORE DIPANGGIL ===', $request->all());
 
-        // Hitung durasi & validasi tanggal
-        $checkin  = Carbon::parse($validated['checkin']);
-        $checkout = Carbon::parse($validated['checkout']);
-        
-        if ($checkout->lte($checkin)) {
+        try {
+            // Validasi
+            $validated = $request->validate([
+                'full_name'   => 'required|min:3',
+                'email'       => 'required|email',
+                'phone'       => 'required|min:10',
+                'dob_day'     => 'required|digits:2',
+                'dob_month'   => 'required|digits:2', 
+                'dob_year'    => 'required|digits:4',
+                'room_name'   => 'required',
+                'price'       => 'required|numeric',
+                'checkin'     => 'required|date',
+                'checkout'    => 'required|date',
+                'persons'     => 'required|numeric'
+            ]);
+
+            Log::info('Validasi form berhasil', $validated);
+
+            // Hitung durasi & validasi tanggal
+            $checkin  = Carbon::parse($validated['checkin']);
+            $checkout = Carbon::parse($validated['checkout']);
+            
+            if ($checkout->lte($checkin)) {
+                Log::warning('Tanggal checkout ≤ checkin', $validated);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tanggal check-out harus setelah check-in'
+                ], 422);
+            }
+
+            $duration   = $checkin->diffInDays($checkout);
+            if ($duration < 1) $duration = 1;
+            $totalPrice = $validated['price'] * $duration;
+
+            // Format tanggal lahir
+            $birthdate = $validated['dob_year'] . '-' . 
+                        str_pad($validated['dob_month'], 2, '0', STR_PAD_LEFT) . '-' . 
+                        str_pad($validated['dob_day'], 2, '0', STR_PAD_LEFT);
+
+            // Generate ID
+            $reservationId = Reservation::generateReservationId();
+            Log::info('Generated reservation_id', ['reservation_id' => $reservationId]);
+
+            // Simpan reservasi
+            $reservation = Reservation::create([
+                'reservation_id'     => $reservationId,
+                'customer_name'      => $validated['full_name'],
+                'customer_birthdate' => $birthdate,
+                'customer_email'     => $validated['email'],
+                'customer_phone'     => $validated['phone'],
+                'special_request'    => $request->note,
+                'check_in'           => $validated['checkin'],
+                'check_out'          => $validated['checkout'],
+                'duration'           => $duration,
+                'capacity'           => $validated['persons'] . ' orang',
+                'room_price'         => $validated['price'],
+                'total_price'        => $totalPrice,
+                'booking_status'     => 'Pending',
+                'room_booking_id'    => $request->room_id,
+                'payment_status'     => 'pending',
+                'order_id'           => null,
+            ]);
+
+            Log::info('Reservasi berhasil disimpan ke database', [
+                'reservation_id' => $reservationId,
+                'room_booking_id' => $request->room_id,
+                'total_price' => $totalPrice
+            ]);
+
+            return response()->json([
+                'success'         => true,
+                'message'         => 'Reservasi berhasil dibuat!',
+                'reservation_id'  => $reservationId,
+                'total_price'     => $totalPrice,
+                'customer_name'   => $validated['full_name'],
+                'customer_email'  => $validated['email'],
+                'customer_phone'  => $validated['phone']
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::warning('Validasi gagal di booking store', $e->errors());
             return response()->json([
                 'success' => false,
-                'message' => 'Tanggal check-out harus setelah check-in'
+                'message' => 'Data tidak valid',
+                'errors'  => $e->errors()
             ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error saat create reservation', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server saat menyimpan reservasi'
+            ], 500);
         }
-
-        $duration   = $checkin->diffInDays($checkout);
-        if ($duration < 1) $duration = 1;
-        $totalPrice = $validated['price'] * $duration;
-
-        // Format tanggal lahir
-        $birthdate = $validated['dob_year'] . '-' . 
-                    str_pad($validated['dob_month'], 2, '0', STR_PAD_LEFT) . '-' . 
-                    str_pad($validated['dob_day'], 2, '0', STR_PAD_LEFT);
-
-        // GENERATE ID CANTIK: RSV20250000001, RSV20250000002, dst...
-        $reservationId = \App\Models\Reservation::generateReservationId();
-
-        // Simpan reservasi
-        $reservation = Reservation::create([
-            'reservation_id'     => $reservationId,
-            'customer_name'      => $validated['full_name'],
-            'customer_birthdate' => $birthdate,
-            'customer_email'     => $validated['email'],
-            'customer_phone'     => $validated['phone'],
-            'special_request'    => $request->note,
-            'check_in'           => $validated['checkin'],
-            'check_out'          => $validated['checkout'],
-            'duration'           => $duration,
-            'capacity'           => $validated['persons'] . ' orang',
-            'room_price'         => $validated['price'],
-            'total_price'        => $totalPrice,
-            'booking_status'     => 'Pending',
-            'room_booking_id'    => $request->room_id,
-            'payment_status'     => 'pending',
-            'order_id'           => null,
-        ]);
-
-        return response()->json([
-            'success'         => true,
-            'message'         => 'Reservasi berhasil dibuat!',
-            'reservation_id'  => $reservationId,
-            'total_price'     => $totalPrice,
-            'customer_name'   => $validated['full_name'],
-            'customer_email'  => $validated['email'],
-            'customer_phone'  => $validated['phone']
-        ]);
     }
 
     /**
