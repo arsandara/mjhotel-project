@@ -38,8 +38,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # ===== 9. LARAVEL COMMANDS (sekarang aman) =====
 RUN if [ ! -f .env ]; then cp .env.example .env && php artisan key:generate --no-interaction; fi && \
     php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+    php artisan route:cache
 
 # ===== 10. FIX APACHE DOCUMENT ROOT =====
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
