@@ -612,7 +612,7 @@
                     const form = document.getElementById('bookingForm');
                     const formData = new FormData(form);
 
-                    const bookingResp = await fetch("{{ route('booking.store') }}", {
+                    const bookingResp = await fetch("{{ route('booking.store') }}".replace(/^http:/, 'https:'), {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': "{{ csrf_token() }}",
@@ -640,7 +640,7 @@
                     const customerPhone = document.getElementById('phone').value.trim();
 
                     // 2) Request Midtrans snap token - ✅ KIRIM SEMUA DATA
-                    const payResp = await fetch("{{ route('payment.create') }}", {
+                    const payResp = await fetch("{{ route('payment.create') }}".replace(/^http:/, 'https:'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

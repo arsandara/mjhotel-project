@@ -22,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->environment('production')) {
-            URL::forceScheme('https'); // Sekarang URL akan dikenali
+        if (env('APP_ENV') === 'production') {
+        \URL::forceScheme('https');
         }
 
         Reservation::observe(ReservationObserver::class);
