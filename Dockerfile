@@ -24,21 +24,19 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf && \
 # ===== 5. SET WORKING DIRECTORY =====
 WORKDIR /var/www/html
 
-# ===== 6. COPY SELURUH APLIKASI DULUAN =====
+# ===== 6. COPY SELURUH APLIKASI =====
 COPY . .
 
-# ===== 7. INSTALL DEPENDENCIES COMPOSER =====
+# ===== 7. BUAT FOLDER CACHE LARAVEL DAN SET PERMISSION DULU =====
+RUN mkdir -p bootstrap/cache storage/framework/{sessions,views,cache} && \
+    chown -R www-data:www-data . && \
+    chmod -R 775 storage bootstrap/cache
+
+# ===== 8. INSTALL DEPENDENCIES COMPOSER =====
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# ===== 8. SETUP PERMISSIONS =====
-RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 storage bootstrap/cache && \
-    chmod -R 777 storage/framework/cache
-
-# ===== 9. LARAVEL COMMANDS (sekarang artisan sudah ada) =====
+# ===== 9. LARAVEL COMMANDS (sekarang aman) =====
 RUN if [ ! -f .env ]; then cp .env.example .env && php artisan key:generate --no-interaction; fi && \
-    php artisan package:discover --no-interaction && \
     php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
