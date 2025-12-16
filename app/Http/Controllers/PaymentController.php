@@ -10,6 +10,8 @@ class PaymentController extends Controller
 {
     public function create(Request $request)
     {
+        Log::info('Payment create called', $request->all());
+
         $validated = $request->validate([
             'reservation_id' => 'required|exists:reservation,reservation_id',
             'total_price'    => 'required|numeric|min:1000',
@@ -18,7 +20,25 @@ class PaymentController extends Controller
             'customer_phone' => 'required|string|max:20',
         ]);
 
-        Log::info('Payment create request:', $validated);
+        Log::info('Validation passed', $validated);
+
+        // Cari reservasi dengan log
+        $reservation = Reservation::where('reservation_id', $validated['reservation_id'])->first();
+
+        if (!$reservation) {
+            Log::error('Reservation NOT FOUND in payment create!', [
+                'reservation_id' => $validated['reservation_id']
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Reservasi tidak ditemukan. Silakan ulangi proses pemesanan.'
+            ], 404);
+        }
+
+        Log::info('Reservation found', [
+            'reservation_id' => $reservation->reservation_id,
+            'total_price' => $reservation->total_price
+        ]);
 
         // Setup Midtrans
         \Midtrans\Config::$serverKey    = 'Mid-server-hdmLL37tARsQYBmi_9301UgP';
@@ -45,19 +65,13 @@ class PaymentController extends Controller
 
         try {
             $snapToken = Snap::getSnapToken($params);
+            Log::info('Snap token generated', ['order_id' => $orderId]);
 
-            $reservation = Reservation::where('reservation_id', $validated['reservation_id'])->firstOrFail();
             $reservation->update([
                 'order_id'       => $orderId,
                 'payment_status' => 'pending'
             ]);
 
-            Log::info('Reservation updated with order_id', [
-                'reservation_id' => $validated['reservation_id'],
-                'order_id'       => $orderId
-            ]);
-
-            // INI YANG PENTING – SIMPAN ORDER_ID KE SESSION SEBELUM RETURN
             session(['last_midtrans_order_id' => $orderId]);
 
             return response()->json([
@@ -67,10 +81,12 @@ class PaymentController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Midtrans error: ' . $e->getMessage());
+            Log::error('Midtrans Snap error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json([
                 'success' => false,
-                'message' => 'Payment gateway error: ' . $e->getMessage()
+                'message' => 'Gagal membuat transaksi Midtrans: ' . $e->getMessage()
             ], 500);
         }
     }
