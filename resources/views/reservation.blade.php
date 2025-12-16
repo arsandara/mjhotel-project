@@ -990,7 +990,7 @@
     <!-- JavaScript -->
     <script>
         // Base URL untuk API
-        const BASE_URL = '{{ url("/") }}';
+        const BASE_URL = '{{ url("/") }}'.replace(/^http:/, 'https:');
 
         // ========== FUNGSI UTAMA ==========
         function formatPrice(price) {
@@ -1038,7 +1038,6 @@
                 console.error('Error loading rooms:', error);
                 
                 // Fallback ke dummy data
-                const fallbackRooms = getFallbackRooms();
                 window.allRooms = sortRoomsByCategoryAndPrice(fallbackRooms);
                 renderRooms(window.allRooms);
                 updateRoomCount(window.allRooms.length);
