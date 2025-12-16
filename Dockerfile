@@ -1,56 +1,52 @@
-#!/bin/bash
+FROM php:8.2-apache
 
-# Script untuk setup Laravel di Fly.io
-# Usage: ./setup-flyio.sh mjhotel-project
+# Install semua dependencies sekaligus
+RUN apt-get update && apt-get install -y \
+    git curl libpng-dev libonig-dev libxml2-dev zip unzip libzip-dev libpq-dev && \
+    docker-php-ext-install pdo pdo_pgsql pgsql pdo_mysql mbstring exif pcntl bcmath gd zip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    a2enmod rewrite headers
 
-APP_NAME=${1:-mjhotel-project}
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-echo "🚀 Setting up Laravel for Fly.io app: $APP_NAME"
-echo "================================================"
+# Set working directory
+WORKDIR /var/www/html
 
-echo ""
-echo "📁 Step 1: Creating required directories..."
-fly ssh console --app $APP_NAME -C "mkdir -p storage/framework/sessions"
-fly ssh console --app $APP_NAME -C "mkdir -p storage/framework/views"
-fly ssh console --app $APP_NAME -C "mkdir -p storage/framework/cache"
-fly ssh console --app $APP_NAME -C "mkdir -p storage/framework/cache/data"
-fly ssh console --app $APP_NAME -C "mkdir -p storage/logs"
-fly ssh console --app $APP_NAME -C "mkdir -p bootstrap/cache"
+# Copy composer files dulu (untuk leverage cache)
+COPY composer.json composer.lock ./
 
-echo ""
-echo "🔐 Step 2: Setting permissions..."
-fly ssh console --app $APP_NAME -C "chown -R www-data:www-data storage"
-fly ssh console --app $APP_NAME -C "chown -R www-data:www-data bootstrap/cache"
-fly ssh console --app $APP_NAME -C "chmod -R 775 storage"
-fly ssh console --app $APP_NAME -C "chmod -R 775 bootstrap/cache"
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-echo ""
-echo "🧹 Step 3: Clearing Laravel caches..."
-fly ssh console --app $APP_NAME -C "php artisan cache:clear"
-fly ssh console --app $APP_NAME -C "php artisan config:clear"
-fly ssh console --app $APP_NAME -C "php artisan view:clear"
-fly ssh console --app $APP_NAME -C "php artisan route:clear"
+# Copy seluruh aplikasi
+COPY . .
 
-echo ""
-echo "📋 Step 4: Optimizing application..."
-fly ssh console --app $APP_NAME -C "php artisan config:cache"
-fly ssh console --app $APP_NAME -C "php artisan route:cache"
-fly ssh console --app $APP_NAME -C "php artisan view:cache"
+# Setup folders dan permissions sekaligus
+RUN mkdir -p bootstrap/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    storage/framework/cache/data \
+    storage/logs && \
+    chown -R www-data:www-data . && \
+    chmod -R 775 storage bootstrap/cache
 
-echo ""
-echo "✅ Step 5: Verifying directory structure..."
-fly ssh console --app $APP_NAME -C "ls -la storage/framework"
+# Konfigurasi Apache untuk Fly.io
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf && \
+    sed -i 's/:80/:8080/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/${APACHE_LOG_DIR}\/access.log/\/dev\/stdout/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/${APACHE_LOG_DIR}\/error.log/\/dev\/stderr/' /etc/apache2/sites-available/000-default.conf
 
-echo ""
-echo "🔄 Step 6: Restarting application..."
-fly apps restart $APP_NAME
+# Set Apache document root
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-echo ""
-echo "✨ Setup complete!"
-echo ""
-echo "📌 Next steps:"
-echo "   1. Check if APP_KEY is set: fly secrets list --app $APP_NAME"
-echo "   2. If not set, generate one: fly secrets set APP_KEY=\$(php artisan key:generate --show) --app $APP_NAME"
-echo "   3. Check logs: fly logs --app $APP_NAME"
-echo "   4. Visit your app: fly open --app $APP_NAME"
-echo ""
+# Laravel optimization (optional, bisa di-comment kalau bikin masalah)
+RUN php artisan config:cache || true && \
+    php artisan route:cache || true
+
+EXPOSE 8080
+
+CMD ["apache2-foreground"]
