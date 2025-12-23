@@ -154,7 +154,7 @@
         min-width: 220px;
       }
 
-      /* Card & table - YANG DIPERBAIKI */
+      /* Card & table */
       .card {
         background: #fff;
         border: 1px solid var(--border);
@@ -171,7 +171,7 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        table-layout: fixed; /* Tetap fixed layout */
+        table-layout: fixed;
       }
       th,
       td {
@@ -189,8 +189,6 @@
         font-size: 13px;
       }
 
-      /* PERUBAHAN UTAMA: Menyamakan width kolom dengan halaman reservasi */
-      /* Di reservasi: ID width:15%, di sini jadikan 15% juga */
       .idcell {
         font-weight: 700;
         color: #111;
@@ -429,12 +427,10 @@
             <section class="card">
                 <div class="card-b">
                     <div class="table-wrap">
-                        <!-- PERUBAHAN DI SINI: Width kolom disamakan dengan halaman reservasi -->
                         <table id="tbl">
                             <thead>
                                 <tr>
-                                    <!-- Dari 8% diubah menjadi 15% seperti di reservasi -->
-                                    <th style="width: 15%">ID</th>
+                                    <th style="width: 8%">ID</th>
                                     <th style="width: 18%">Nama Lengkap</th>
                                     <th style="width: 16%">Kamar</th>
                                     <th style="width: 12%">Check In</th>
@@ -677,5 +673,3 @@
             `).join('');
         }
     </script>
-</body>
-</html>
