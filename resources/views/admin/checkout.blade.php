@@ -435,15 +435,13 @@
                                 <tr>
                                     <!-- Dari 8% diubah menjadi 15% seperti di reservasi -->
                                     <th style="width: 15%">ID</th>
-                                    <!-- Sesuaikan width lain agar total tetap 100% -->
                                     <th style="width: 18%">Nama Lengkap</th>
                                     <th style="width: 16%">Kamar</th>
                                     <th style="width: 12%">Check In</th>
                                     <th style="width: 12%">Check Out</th>
                                     <th style="width: 8%">Malam</th>
                                     <th style="width: 14%">Total</th>
-                                    <!-- Kolom aksi: 100% - (15+18+16+12+12+8+14) = 5% -->
-                                    <th style="width: 5%; text-align: right">Aksi</th>
+                                    <th style="width: 12%; text-align: right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
